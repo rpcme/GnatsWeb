@@ -1,29 +1,53 @@
 
-                   Gnatsweb - web front-end to gnats
+                   Gnatsweb - web front-end to GNATS
 
                            Installation Guide
 
 
-Quick start for the impatient
-=============================
+Steps to install Gnatsweb on your web server
+============================================
 
-    1. Install gnatsd, the gnats network server.  Gnatsweb doesn't run
-       without it.
+    1. Make sure you have a working GNATS installation with a
+       non-empty database before installing Gnatsweb.
 
-    2. Configure gnatsd to allow host access to your web server.  Here
+    2. Configure GNATS to allow host access to your web server.  Here
        are two different ways to accomplish this:
 
        a. Grant 'edit' access the web server in the
           gnats-adm/gnatsd.conf file, thus giving everyone with access
-          to the web server edit access to your Gnats database.
+          to the web server edit access to your GNATS database.
           Gnatsweb will still prompt for a username/password; this
           username will be used for the Audit-Trail, but you don't need
           to put the username into the gnats-adm/gnatsd.access file.
+
+          If you are running the web server on the same machine as
+          GNATS is running on, the following entry in gnatsd.conf will
+          give edit access:
+
+            localhost:edit:
 
        b. Grant restricted access only (such as 'view' or 'none') to the
           web server in the gnats-adm/gnatsd.conf file.  Grant higher
           access to individual users by adding username/password entries
           in the gnats-adm/gnatsd.access file.
+
+          NOTE: If you have multiple databases in your GNATS setup,
+          Gnatsweb will not work properly if you set access for the
+          web server to 'none', because this will prevent Gnatsweb
+          from obtaining a list of what databases are actually
+          available on the server. In this case, you must set access
+          to 'view' or higher.  This is a deficiency which will
+          hopefully be adressed in coming versions of GNATS.
+
+          If you are running the web server on the same machine as
+          GNATS is running on, one of the following entries in
+          gnatsd.conf will give the required access:
+
+            localhost:view:
+
+          or
+
+            localhost:none:
 
        If you want more restrictions than provided by those solutions,
        consider restricting access to your web server, or the particular
@@ -35,10 +59,28 @@ Quick start for the impatient
        Basic configuration requires only that you specify the host +
        port number of your gnats server.
 
-    4. Change line 1 of gnatsweb.pl to point to the location of your
+    4. In order for Gnatsweb to work properly, you need to install two
+       Perl modules on your system.  Some systems may already have
+       them installed, but the following procedure ensures that you
+       have the correct versions of them on your system:
+
+       CGI.pm v2.56 or newer (the unofficial version 3.x of CGI.pm
+       will not work): Gnatsweb will not work at all without this
+       module.  On most systems, the following command (run as root)
+       installs the correct version:
+
+       perl -MCPAN -e 'install CGI'
+
+       MIME::BASE64 (Gnatsweb will run without it, but attachment
+       handling will be disabled).  Most systems get the right version
+       when the following command is run (as root):
+
+       perl -MCPAN -e 'install MIME::Base64'
+
+    5. Change line 1 of gnatsweb.pl to point to the location of your
        'perl' executable.  Perl must be version 5.
 
-    5. Run the tests to make sure the setup is OK.  Specify a
+    6. Run the tests to make sure the setup is OK.  Specify a
        username/password/database_name on the command line like so:
 
            make test USERNAME=anon PASSWORD=pw DATABASE=db_alias
@@ -48,7 +90,7 @@ Quick start for the impatient
        server, and their alias names.  The GNATS manual is
        unfortunately not clear about this, but even if you have only a
        single database on your machine, you need a gnats-db.conf
-       file.  Read appendix C of the Gnats manual, entitled "Multiple
+       file.  Read appendix C of the GNATS manual, entitled "Multiple
        Databases on one host" for more information on the format of
        this file.  Again, the information in appendix C applies even
        if you have only a single database.
@@ -63,50 +105,27 @@ Quick start for the impatient
        Note: if 'perl' for you is not Perl 5, then 'make PERL=/path/perl5'
 
        If you don't see the message "All tests passed", investigate.
+       The TROUBLESHOOTING document distrivuted with Gnatsweb contains
+       some useful advice.
 
-    6. Install gnatsweb.pl (and gnatsweb-site.pl if you created one)
+    7. Install gnatsweb.pl (and gnatsweb-site.pl if you created one)
        into a CGI-enabled directory on your web server.  For example, on
        Red Hat Linux with Apache:
 
            make install CGI_DIR=/home/httpd/cgi-bin
 
-    7. Install the MIME::Base64 package, if you want to use file
+    8. Install the MIME::Base64 package, if you want to use file
        attachments in your PRs with gnatsweb.  The easiest way to do this
        is to type (as root if the perl installation is owned by root):
 
            perl -MCPAN -e 'install MIME::Base64'
 
+What to do if you have problems:
 
-Known problems and solutions
-============================
+- Go through the TROUBLESHOOTING document.
+- Try sifting through the GNATS-related mailing list archives at
+  http://sources.redhat.com/ml/
+- If you still have problems, try posting to the gnats-devel or
+  bug-gnats mailing lists.  How to subscribe is covered at
+  http://sources.redhat.com/gnats/
 
-    1. Problem: Email is going to the wrong place, e.g. to 'joe' instead
-       of 'joe@my.org'.
-
-       Solution: Fix all the email addresses in
-       $GNATS_ROOT/gnats-adm/responsible.
-
-    2. Problem: Using lynx for Gnatsweb login is broken.
-
-       Solution: No good solution exists at the present time.
-
-    3. Problem: When you use the "Remember this query as" function, the query
-       is stored as a cookie in your web browser. If the query is very complex,
-       the resulting cookie might become larger than the limit imposed by
-       the web server on cookie transfers. The following error will be
-       issued by the web server when you try to access the Gnats database:
-
-       Bad Request
- 
-       Your browser sent a request that this server could not understand.
- 
-       Size of a request header field exceeds server limit.
-
-       Solution 1: A quick client-side solution is to delete the offending
-       cookie from the repository of your browser (cookies.txt in Netscape, the
-       cookies directory in the Windows user profile for Internet Explorer).
-
-       Solution 2: A more permanent solution is the server-side one. If you use
-       Apache, recompile and install it with the DEFAULT_LIMIT_REQUEST_FIELDSIZE
-       setting in src/include/httpd.h of the Apache source tree increased from
-       the default value of 8190 to something like 32768.

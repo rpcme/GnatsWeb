@@ -1,5 +1,21 @@
-Current Version: 2.9.0
+Current Version: 2.9.1
 See the file ChangeLog for the details of all changes.
+
+Changes from 2.9.0 to 2.9.1
+* Documentation corrected and significantly expanded.  We now provide
+  a TROUBLESHOOTING document as well.
+* Bug fix. E-mail address extraction for the "send email to interested
+  parties" is now more robust.
+* Bug fix. Handle browsers without Javascript support better.
+* Bug fix. Minor problems with browsers such as Konqueror should be
+  gone.
+* Minor new feature: We now use both the category name and description
+  and the responsible name and full name in dialogs on the create,
+  edit and query pages.
+* Minor new feature: Whether the Audit Trail is visible by default in
+  the View PR screen is now configurable.
+* Minor new feature: There is now a checkbox in the query pages which
+  provides for displaying the current date on the query results page.
 
 Changes from 2.8.2 to 2.9.0
 * Usability enhancement. There is now a navigation bar on top of all

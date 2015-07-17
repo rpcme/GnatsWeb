@@ -1,4 +1,76 @@
-==========  gnatsweb 2.9.0 released ====================================
+==========  Gnatsweb 2.9.1 released ====================================
+
+2001-10-11  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl: Change $VERSION to 2.9.1.
+
+	* INSTALL: Clarify some points, expand treatment of gnatsd access
+	  permissions.  Mention CGI.pm and MIME::Base64 and how to install
+	  them.  Include a section on what to do when problems arise.
+	  TROUBLESHOOTING: New document describing how to troubleshoot
+	  Gnatsweb.
+
+	* gnatsweb.pl (split_csl): New subroutine. Splits comma-separated
+	  e-mail addresses in such a way that commas in quotes aren't
+	  considered separators.  Thanks to Arno Unkrig.
+	  (fix_email_addrs): Use it.
+	  (interested_parties): Likewise.
+
+2001-10-08  Yngve Svendsen  <yngves@gnu.org>
+
+    * gnatsweb.html: Document the Display Current Date checkbox in the
+    query pages.
+	
+2001-10-08  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (query_page, advanced_query_page): Add checkbox
+	  controlling whether to display the current date on the results
+	  page. Default is on.
+	  (display_query_results): Display current date below number of
+	  matches if the "Display current date" checkbox on the query page
+	  is checked.
+	
+2001-10-06  Yngve Svendsen  <yngves@gnu.org>
+
+	* gnatsweb.pl (login_page_javascript): Add a message between
+	<noscript> tags, advising users with JavaScript turned off in
+	their browsers about the necessity of enabling cookies.
+
+	* gnatsweb.pl: New config variable $include_audit_trail which
+	controls whether the Audit-Trail will be shown by default in the
+	View PR screen.
+	(main_page): Use it.
+
+2001-10-06  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb-site-sente.pl (site_callback): In version 2.8.2, the
+	  title of the View PR page changed.  This caused problems for the
+	  page_footer reason.  Fix this by changing the page title check
+	  to use a regexp.  Thanks to Glenn Henshaw.
+
+	* gnatsweb.pl (submitnewpr, init_prefs): Ensure that variables are
+	  defined before using them in conditionals.  Makes the web server
+	  error_log tidier.  Thanks to Robert Lupton the Good.
+
+	* gnatsweb.pl (submitedit): Extend scope of $mail_sent so that it
+	  is accessible outside the LOCKED block.  Thanks to Robert Lupton
+	  the Good.
+
+2001-10-05  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (display_query_results): Cosmetics -- use
+	  cellspacing 0 in query results table.
+
+	* gnatsweb.pl (sendpr, edit, query_page, parse_categories,
+	  parse_responsible): We now use both the category name and
+	  description and the responsible name and full name in dialogs on
+	  the create, edit and query pages.  Thanks to Glenn Henshaw.
+
+2001-09-24  Franz Sirl  <Franz.Sirl-kernel@lauterbach.com>
+	
+	* gnatsweb.pl: Spaces in HREFs must be encoded.
+
+==========  Gnatsweb 2.9.0 released ====================================
 
 2001-09-10  Yngve Svendsen  <yngve.svendsen@clustra.com>
 
@@ -55,7 +127,7 @@
 	  containing a double newline in the body would be truncated
 	  during decoding.  Fix due to Omar Rashad.
 
-==========  gnatsweb 2.8.2 released ====================================
+==========  Gnatsweb 2.8.2 released ====================================
 
 2001-06-26  Yngve Svendsen  <yngve.svendsen@clustra.com>
 
@@ -65,7 +137,7 @@
 	submitting a rogue help_file parameter in the URL. help_file is
 	now hardcoded to 'gnatsweb.html'.
 
-==========  gnatsweb 2.8.1 released ====================================
+==========  Gnatsweb 2.8.1 released ====================================
 	
 2001-06-04  Yngve Svendsen  <yngve.svendsen@clustra.com>
 
@@ -89,7 +161,7 @@
 	  JavaScript is unacceptable for many sites, so we revert to the
 	  old style.
 
-==========  gnatsweb 2.8.0 released ====================================
+==========  Gnatsweb 2.8.0 released ====================================
 
 2001-05-02  Yngve Svendsen  <yngve.svendsen@clustra.com>
 
@@ -101,7 +173,7 @@
 	  regexp in order to properly mark groups.google.com's somewhat
 	  bizarre URLs.
 
-==========  gnatsweb 2.8.0 beta (nonpublic) ============================
+==========  Gnatsweb 2.8.0 beta (nonpublic) ============================
 
 2001-05-02  Yngve Svendsen  <yngve.svendsen@clustra.com>
 

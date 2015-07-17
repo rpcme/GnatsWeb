@@ -2,7 +2,7 @@
 # gnatsweb-site.pl -
 #     Gnatsweb site-specific variables and subroutines.
 #
-# $Id: gnatsweb-site-sente.pl,v 1.1.1.1.2.4 2001/07/01 17:46:36 yngves Exp $
+# $Id: gnatsweb-site-sente.pl,v 1.1.1.1.2.5 2001/10/05 23:39:09 yngves Exp $
 
 # Gnats host.
 $site_gnats_host = 'gnats.senteinc.com';
@@ -118,7 +118,7 @@ sub site_callback {
     {
         # override footer html
         my($title) = @args;
-        if ($title eq 'View PR')
+        if ($title =~ /^View PR/)
         {
             # Add one-click buttons at footer of view PR page.
             return sente_view_postlude();

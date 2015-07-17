@@ -1,6 +1,6 @@
 # Makefile for gnatsweb
 #
-# $Id: Makefile,v 1.1.1.1.2.5 2001/09/08 15:43:10 yngves Exp $
+# $Id: Makefile,v 1.1.1.1.2.7 2001/10/11 13:50:13 yngves Exp $
 
 INSTALL_CGI =	gnatsweb.pl gnats.pm \
 		gnatsweb.html \
@@ -8,8 +8,8 @@ INSTALL_CGI =	gnatsweb.pl gnats.pm \
 		gnats/*.pm \
 		charts/*.pl
 INSTALL_LOCAL = 
-OTHER_FILES =	ChangeLog INSTALL Makefile NEWS README TODO \
-		test.pl
+OTHER_FILES =	ChangeLog INSTALL Makefile NEWS README \
+		TROUBLESHOOTING test.pl
 TARBALL_ALL =	$(INSTALL_CGI) $(OTHER_FILES)
 PERL =		perl
 
