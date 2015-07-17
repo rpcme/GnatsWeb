@@ -2,7 +2,7 @@
 # gnatsweb-site.pl -
 #     Gnatsweb site-specific variables and subroutines.
 #
-# $Id: gnatsweb-site-sente.pl,v 1.1.1.1 2001/04/28 11:00:57 yngves Exp $
+# $Id: gnatsweb-site-sente.pl,v 1.1.1.1.2.4 2001/07/01 17:46:36 yngves Exp $
 
 # Gnats host.
 $site_gnats_host = 'gnats.senteinc.com';

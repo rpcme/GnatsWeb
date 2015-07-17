@@ -9,7 +9,7 @@ package gnats::chart;
 
 # Version stuff
 $VERSION = '0.1';
-$REVISION = (split(/ /, '$Revision: 1.1.1.1 $ '))[1];
+$REVISION = (split(/ /, '$Revision: 1.1.2.2 $ '))[1];
 
 # Package stuff
 

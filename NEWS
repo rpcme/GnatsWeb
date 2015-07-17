@@ -1,5 +1,15 @@
-Current Version: 2.8.2
+Current Version: 2.9.0
 See the file ChangeLog for the details of all changes.
+
+Changes from 2.8.2 to 2.9.0
+* Usability enhancement. There is now a navigation bar on top of all
+  pages with links to all major Gnatsweb functions.
+* Bug fix. Properly handle a locked GNATS database. This used to make
+  Gnatsweb bomb out when submitting edits and leave the PR locked.
+* Minor bug fixes related to attachments.
+* Add X-Mailer header to outgoing mail.
+* Bug fix. Text attachments are no longer truncated at the first blank
+  line.
 
 Changes from 2.8.1 to 2.8.2
 * Fixed serious security hole allowing a attacker to read files and
@@ -52,4 +62,3 @@ Changes from 2.7 beta to 2.8.0
 * It is now possible to link an external stylesheet to all Gnatsweb
   pages. The Gnatsweb-generated HTML has been thoroughly cleaned up in
   order to support stylesheets better.
-

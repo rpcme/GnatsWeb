@@ -1,6 +1,6 @@
 # Makefile for gnatsweb
 #
-# $Id: Makefile,v 1.1.1.1 2001/04/28 11:00:57 yngves Exp $
+# $Id: Makefile,v 1.1.1.1.2.5 2001/09/08 15:43:10 yngves Exp $
 
 INSTALL_CGI =	gnatsweb.pl gnats.pm \
 		gnatsweb.html \
@@ -8,7 +8,7 @@ INSTALL_CGI =	gnatsweb.pl gnats.pm \
 		gnats/*.pm \
 		charts/*.pl
 INSTALL_LOCAL = 
-OTHER_FILES =	ChangeLog INSTALL Makefile README TODO \
+OTHER_FILES =	ChangeLog INSTALL Makefile NEWS README TODO \
 		test.pl
 TARBALL_ALL =	$(INSTALL_CGI) $(OTHER_FILES)
 PERL =		perl
@@ -60,11 +60,9 @@ tarball: no-debug-statements
 	$(REMOVE_PRIVATE_STUFF) gnatsweb-$(VERSION)/gnatsweb-site-sente.pl
 	tar -czf $$HOME/gnatsweb-$(VERSION).tar.gz gnatsweb-$(VERSION)
 	rm -rf gnatsweb-$(VERSION)
-	ncftpput -f ~/.ncftp/ftp.senteinc.com /public_ftp/gnatsweb \
-		$$HOME/gnatsweb-$(VERSION).tar.gz
 	@echo
-	@echo release is at:
-	@echo "  ftp://ftp.senteinc.com/gnatsweb/gnatsweb-$(VERSION).tar.gz"
+	@echo release is ready as:
+	@echo "  gnatsweb-$(VERSION).tar.gz"
 	@echo
 
 contrib: no-debug-statements test

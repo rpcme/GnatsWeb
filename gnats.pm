@@ -13,7 +13,7 @@ use Carp;
 
 # Version stuff
 $VERSION = '0.1';
-$REVISION = (split(/ /, '$Revision: 1.2 $ '))[1];
+$REVISION = (split(/ /, '$Revision: 1.1.2.5 $ '))[1];
 
 use Exporter ();
 @ISA = qw(Exporter);
@@ -227,7 +227,7 @@ sub get_reply
   elsif($state == $CODE_GNATS_LOCKED)
   {
     $FULL_ERRSTR = $text;
-    gerror("lock file exists");
+    gerror("The GNATS database is locked");
     return undef;
   }
   elsif($state == $CODE_NO_PRS)

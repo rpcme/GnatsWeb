@@ -2,7 +2,7 @@
 #
 # Display the opened_vs_closed chart.
 #
-# $Id: support_days_to_close.pl,v 1.1.1.1 2001/04/28 11:00:57 yngves Exp $
+# $Id: support_days_to_close.pl,v 1.1.2.2 2001/07/01 17:46:36 yngves Exp $
 
 # BEGIN configuration
 @GNATS_LOGIN_DATA = ('gnats', 1529, 'main', 'guest', 'guest');

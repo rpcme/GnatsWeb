@@ -3,7 +3,7 @@
 # gnats-test.pl -
 #      Test code for gnats-lib.pl
 #
-# $Id: test.pl,v 1.1.1.1 2001/04/28 11:00:57 yngves Exp $
+# $Id: test.pl,v 1.1.1.1.2.4 2001/07/01 17:46:36 yngves Exp $
 
 #-----------------------------------------------------------------------------
 # test harness setup

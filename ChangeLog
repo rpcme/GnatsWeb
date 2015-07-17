@@ -1,3 +1,60 @@
+==========  gnatsweb 2.9.0 released ====================================
+
+2001-09-10  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (page_start_html): Refer to $sn, not $script_name.
+	  Thanks to Tammo Schnieder.
+
+2001-09-08  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* NEWS: Updated for version 2.9.0.
+
+	* Makefile: Update tarball target to no longer be Sente-specific
+	  and to accomodate the NEWS file.
+
+	* gnatsweb.pl: Change $VERSION to 2.9.0.
+
+	* gnats.pm (get_reply): Make the error text for CODE_GNATS_LOCKED
+	  more understandable.
+
+	* gnatsweb.pl (submitedit): Print proper HTTP headers before
+	  outputting error message during submission.  Gnatsweb would
+	  cause a web server error when the entire database was locked,
+	  also leaving the PR locked.  Also take into account that we have
+	  two possibly error-generating client commands in sequence, so we
+	  need to prevent any error from the first command from being
+	  overwritten by the second.
+
+	* gnatsweb.pl (submitedit): Add header `X-Mailer: gnatsweb
+	  $VERSION' to outgoing mail.  Makes for easier filtering.  Thanks
+	  to Vadim Zaliva.
+
+	* gnatsweb.pl: Add a navigation bar just below the page banner
+	 (backport from Gnatsweb 4):
+        - $site_button_background and $site_button_foreground. New
+          variables initialized to black and white resp.
+        - (page_start_html): Rewrite to display button bar and
+          generally clean up the code, with clearer style declarations.
+        - (login_page): Call page_start_html with an additional
+          parameter set to '1'. Prevents the button bar from being
+          displayed on this page.
+
+	* gnatsweb.pl (fix_multiline_val): Bug fix.  Convert `>' at
+	  beginning-of-line to `> '.  This used to confuse GNATS.  Fix due
+	  to Arno Unkrig.
+
+	* gnatsweb.pl (download_attachment): Use the original Content-Type
+	of the attachment.  Fix due to Arno Unkrig.
+
+	* gnatsweb.pl (decode_attachment): Bug fix. Allow line breaks in
+	"Content-Disposition:" header.  Fix due to Arno Unkrig.
+
+2001-07-01  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (decode_attachment): Fix a problem where attachments
+	  containing a double newline in the body would be truncated
+	  during decoding.  Fix due to Omar Rashad.
+
 ==========  gnatsweb 2.8.2 released ====================================
 
 2001-06-26  Yngve Svendsen  <yngve.svendsen@clustra.com>
