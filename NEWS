@@ -1,5 +1,14 @@
-Current Version: 2.9.1
+Current Version: 2.9.2
 See the file ChangeLog for the details of all changes.
+
+Changes from 2.9.1 to 2.9.2
+* Workaround for an age-old stupid, stupid, stupid Netscape bug, in
+  which the back arrow is broken after submitting a new PR or an
+  edited PR.
+* Use the $include_audit_trail variable to choose view command for the
+  PR number links in query results.  This was mistakenly left out in
+  2.9.1.
+* Documentation polished.
 
 Changes from 2.9.0 to 2.9.1
 * Documentation corrected and significantly expanded.  We now provide

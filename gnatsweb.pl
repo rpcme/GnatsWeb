@@ -5,7 +5,7 @@
 # Copyright 1998-1999 - Matt Gerassimoff
 # and Ken Cox
 #
-# $Id: gnatsweb.pl,v 1.1.1.1.2.17 2001/10/11 13:42:49 yngves Exp $
+# $Id: gnatsweb.pl,v 1.1.1.1.2.21 2001/10/23 11:16:16 yngves Exp $
 #
 
 #-----------------------------------------------------------------------------
@@ -112,8 +112,8 @@ use gnats qw/client_init client_exit client_cmd/;
 #$gnats::DEBUG_LEVEL = 2;
 
 # Version number + RCS revision number
-$VERSION = '2.9.1';
-$REVISION = (split(/ /, '$Revision: 1.1.1.1.2.17 $ '))[1];
+$VERSION = '2.9.2';
+$REVISION = (split(/ /, '$Revision: 1.1.1.1.2.21 $ '))[1];
 
 # width of text fields
 $textwidth = 60;
@@ -409,6 +409,69 @@ sub remove_attachments_from_pr
   }
 }
 
+# wrapper functions for formstart...
+sub multipart_form_start
+{
+  formstart(1, @_);
+}
+sub form_start
+{
+  formstart(0, @_);
+}
+
+# workaround for an exceedingly dumb netscape bug.  we hates
+# netscape...  this bug manifests if you click on the "create"
+# button bar link (but not the grey button on the main page), submit a
+# PR, then hit the back button (usually because you got an error).
+# you're taken "back" to the same error page -- all the stuff you
+# entered into the submission form is *gone*.  this is kind of annoying...
+# (it also manifests if you click the edit link from the query results page.)
+sub formstart
+{
+  # this bugfix is mostly lifted from the CGI.pm docs.  here's what they
+  # have to say:
+  #   When you press the "back" button, the same page is loaded, not
+  #   the previous one.  Netscape's history list gets confused
+  #   when processing multipart forms. If the script generates
+  #   different pages for the form and the results, hitting the
+  #   "back" button doesn't always return you to the previous page;
+  #   instead Netscape reloads the current page. This happens even
+  #   if you don't use an upload file field in your form.
+  #
+  #   A workaround for this is to use additional path information to
+  #   trick Netscape into thinking that the form and the response
+  #   have different URLs. I recommend giving each form a sequence
+  #   number and bumping the sequence up by one each time the form
+  #   is accessed:
+
+  # should we do multipart?
+  my $multi = shift;
+  
+  # in case the caller has some args to pass...
+  my %args = @_;
+  
+  # if the caller has given an "action" arg, we don't do any
+  # subterfuge.  let the caller worry about the bug...
+  if (!exists $args{'-action'})
+  {
+    # get sequence number and increment it
+    my $s = $q->path_info =~ m{/(\d+)/?$};
+    $s++;
+    # Trick Netscape into thinking it's loading a new script:
+    $args{-action} = $q->script_name . "/$s";
+  }
+    
+  if ($multi)
+  {
+    print $q->start_multipart_form(%args);
+  }
+  else
+  {
+    print $q->start_form(%args);
+  }  
+  return;
+}
+
 # sendpr -
 #     The Create PR page.
 #
@@ -434,7 +497,7 @@ sub sendpr
   # &submitnewpr.
   unshift(@responsible, '<default>');
 
-  print $q->start_multipart_form(),
+  print multipart_form_start(-name=>'sendPrForm'), "\n",
         hidden_db(),
 	$q->p($q->submit('cmd', 'submit'),
 	" or ",
@@ -713,7 +776,8 @@ sub get_editpr_url
 #
 sub get_viewpr_url
 {
-  return get_pr_url('view', @_);
+  my $viewcmd = $include_audit_trail ? 'view%20audit-trail' : 'view';
+  return get_pr_url($viewcmd, @_);
 }
 
 # Same as script_name(), but includes 'database=xxx' param.
@@ -891,7 +955,7 @@ sub edit
   shift(@state);
   shift(@submitter_id);
 
-  print $q->start_multipart_form(),
+  print multipart_form_start(-name=>'editPrForm'), "\n",
         hidden_db(),
         $q->p($q->submit('cmd', 'submit edit'),
         " or ",
@@ -1418,7 +1482,7 @@ sub advanced_query_page
 
   ### Text and multitext queries
 
-  print "<table border=1 bgcolor=$cell_bg>",
+  print "<table border=1 cellspacing=0 bgcolor=$cell_bg>",
         "<caption>Search All Text</caption>",
         "<tr bgcolor=$heading_bg>\n",
         "<th nowrap>Search these text fields</th>\n",
@@ -1436,7 +1500,7 @@ sub advanced_query_page
 
   ### Date queries
 
-  print "<table border=1 bgcolor=$cell_bg>",
+  print "<table border=1 cellspacing=0 bgcolor=$cell_bg>",
         "<caption>Search By Date</caption>",
         "<tr bgcolor=$heading_bg>\n",
         "<th nowrap>Date Search</th>\n",
@@ -1464,7 +1528,7 @@ sub advanced_query_page
 
   ### Field queries
 
-  print "<table border=1 bgcolor=$cell_bg>",
+  print "<table border=1 cellspacing=0 bgcolor=$cell_bg>",
         "<caption>Search Individual Fields</caption>",
         "<tr bgcolor=$heading_bg>\n",
         "<th nowrap>Search this field</th>\n",
@@ -1520,7 +1584,7 @@ sub advanced_query_page
 
   my(@columns) = split(' ', $global_prefs{'columns'});
   @columns = @deffields unless @columns;
-  print "<table border=1 bgcolor=$cell_bg>",
+  print "<table border=1 cellspacing=0 bgcolor=$cell_bg>",
         "<caption>Display</caption>",
         "<tr valign=top><td>Display these columns:</td>\n<td>",
         $q->scrolling_list(-name=>'columns',

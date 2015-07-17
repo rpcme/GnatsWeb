@@ -76,7 +76,7 @@
        is stored as a cookie in your web browser. If the query is very complex,
        the resulting cookie might become larger than the limit imposed by
        the web server on cookie transfers. The following error will be
-       issued by the web server when you try to access the Gnats database:
+       issued by the web server when you try to access the GNATS database:
 
        Bad Request
 
@@ -92,3 +92,15 @@
        Apache, recompile and install it with the DEFAULT_LIMIT_REQUEST_FIELDSIZE
        setting in src/include/httpd.h of the Apache source tree increased from
        the default value of 8190 to something like 32768.
+
+
+    6. Getting help.
+
+       - Go through the TROUBLESHOOTING document.
+       - Try sifting through the GNATS-related mailing list archives
+         at http://sources.redhat.com/ml/
+       - If you still have problems, try posting to the gnats-devel or
+         bug-gnats mailing lists.  How to subscribe is covered at
+         http://sources.redhat.com/gnats/.  Please avoid posting until
+         you are completely certain that there is nothing relevant in
+         the mailinglist archives.

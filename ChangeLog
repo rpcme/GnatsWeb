@@ -1,3 +1,31 @@
+==========  Gnatsweb 2.9.2 released ====================================
+
+2001-10-23  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl: Change $VERSION to 2.9.2.
+
+	* NEWS: Update for 2.9.2.
+
+2001-10-21  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* TROUBLESHOOTING: Add 'Getting help' section.  Polish.
+
+	* INSTALL: Polish
+
+	* gnatsweb.pl (advanced_query_page): Use cellspacing=0.
+
+	* gnatsweb.pl (formstart): Workaround for an exceedingly dumb
+	  netscape bug, in which the back arrow is broken after submitting
+	  a new PR or an edited PR.
+	- (form_start, multipart_form_start): Wrapper functions for
+	  formstart().
+	- (send_pr, edit): Use multipart_form_start().
+	  Changes backported from Gnatsweb 4.0.  Thanks to Dirk Bergstrom.
+
+	* gnatsweb.pl (get_viewpr_url): Use the $include_audit_trail
+	  variable to choose view command for the PR number links in query
+	  results.  This was mistakenly left out in 2.9.1.
+
 ==========  Gnatsweb 2.9.1 released ====================================
 
 2001-10-11  Yngve Svendsen  <yngve.svendsen@clustra.com>
@@ -18,8 +46,8 @@
 
 2001-10-08  Yngve Svendsen  <yngves@gnu.org>
 
-    * gnatsweb.html: Document the Display Current Date checkbox in the
-    query pages.
+        * gnatsweb.html: Document the Display Current Date checkbox in the
+	  query pages.
 	
 2001-10-08  Yngve Svendsen  <yngve.svendsen@clustra.com>
 

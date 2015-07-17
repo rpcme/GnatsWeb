@@ -13,7 +13,7 @@ Steps to install Gnatsweb on your web server
     2. Configure GNATS to allow host access to your web server.  Here
        are two different ways to accomplish this:
 
-       a. Grant 'edit' access the web server in the
+       a. Grant 'edit' access to the web server in the
           gnats-adm/gnatsd.conf file, thus giving everyone with access
           to the web server edit access to your GNATS database.
           Gnatsweb will still prompt for a username/password; this
@@ -51,13 +51,13 @@ Steps to install Gnatsweb on your web server
 
        If you want more restrictions than provided by those solutions,
        consider restricting access to your web server, or the particular
-       CGI directory where you plan to install gnatsweb.
+       CGI directory where you plan to install Gnatsweb.
 
-    3. If your gnats server is on the same host as your web server,
+    3. If your GNATS server is on the same host as your web server,
        skip this step.  If not, create 'gnatsweb-site.pl', the site
        configuration file.  Read gnatsweb.pl, and follow the directions.
        Basic configuration requires only that you specify the host +
-       port number of your gnats server.
+       port number of your GNATS server.
 
     4. In order for Gnatsweb to work properly, you need to install two
        Perl modules on your system.  Some systems may already have
@@ -83,49 +83,44 @@ Steps to install Gnatsweb on your web server
     6. Run the tests to make sure the setup is OK.  Specify a
        username/password/database_name on the command line like so:
 
-           make test USERNAME=anon PASSWORD=pw DATABASE=db_alias
+           make test USERNAME=anon PASSWORD=pw DATABASE=dbalias
 
        Before you run this test, you need to set up a file
        /etc/gnats-db.conf, containing a list of databases on your
        server, and their alias names.  The GNATS manual is
        unfortunately not clear about this, but even if you have only a
-       single database on your machine, you need a gnats-db.conf
-       file.  Read appendix C of the GNATS manual, entitled "Multiple
+       single database on your machine, you need a gnats-db.conf file.
+       Read appendix C of the GNATS manual, entitled "Multiple
        Databases on one host" for more information on the format of
        this file.  Again, the information in appendix C applies even
        if you have only a single database.
 
-       The db_alias value in the make test command line should be one
+       The dbalias value in the make test command line should be one
        of the alias names defined in gnats-db.conf.
 
        Note: no PRs are modified during the tests.  The database alias,
        username and password must be valid, and the database must contain
        at least one PR.
 
-       Note: if 'perl' for you is not Perl 5, then 'make PERL=/path/perl5'
-
        If you don't see the message "All tests passed", investigate.
-       The TROUBLESHOOTING document distrivuted with Gnatsweb contains
-       some useful advice.
+       The TROUBLESHOOTING document distributed with Gnatsweb contains
+       some useful advice.  See also the end of this document.
 
     7. Install gnatsweb.pl (and gnatsweb-site.pl if you created one)
-       into a CGI-enabled directory on your web server.  For example, on
-       Red Hat Linux with Apache:
+       into a CGI-enabled directory on your web server.  For a typical
+       Apache web server installation:
 
-           make install CGI_DIR=/home/httpd/cgi-bin
+         make install CGI_DIR=/usr/local/apache/cgi-bin
 
-    8. Install the MIME::Base64 package, if you want to use file
-       attachments in your PRs with gnatsweb.  The easiest way to do this
-       is to type (as root if the perl installation is owned by root):
 
-           perl -MCPAN -e 'install MIME::Base64'
-
-What to do if you have problems:
+What to do if you have problems
+===============================
 
 - Go through the TROUBLESHOOTING document.
 - Try sifting through the GNATS-related mailing list archives at
   http://sources.redhat.com/ml/
 - If you still have problems, try posting to the gnats-devel or
   bug-gnats mailing lists.  How to subscribe is covered at
-  http://sources.redhat.com/gnats/
-
+  http://sources.redhat.com/gnats/.  Please avoid posting until you
+  are completely certain that there is nothing relevant in the
+  mailinglist archives.
