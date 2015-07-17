@@ -1,11 +1,9 @@
 
                    Gnatsweb - web front-end to GNATS
 
-                            Matt Gerassimoff
                               Kenneth Cox
-
-                         Updated October 2001
-             by Yngve Svendsen <yngve.svendsen@clustra.com>
+                            Matt Gerassimoff
+                            Yngve Svendsen
 
 
 What is Gnatsweb?
@@ -37,7 +35,8 @@ System Requirements
     Gnatsweb requires that you have the following:
 
     * The 'gnatsd' network daemon installed and configured, version
-      3.108 or greater.
+      3.108 or greater.  This version will not work with GNATS
+      versions 4 and higher
 
     * Write access to a CGI-enabled directory on your web server.
 

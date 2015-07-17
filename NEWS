@@ -1,5 +1,19 @@
-Current Version: 2.9.2
+Current Version: 2.9.3
 See the file ChangeLog for the details of all changes.
+
+Changes from 2.9.2 to 2.9.3
+* We now display indented material in multiline fields, such as code
+  samples etc., with the indentation intact.
+* We now include a Reply-To header in change notification emails, set
+  up in such a way that followups to change notification e-mails are also
+  sent to GNATS itself.
+* After successful PR submission, the user is now redirected to the
+  page the user was at when "Create" was clicked.
+* Support queries on Submitter-ID from the standard query page.
+* The redirect after stored query deletion now works in Netscape.
+* The "send mail to interested parties" link now includes the PR
+  synopsis as well as category and PR number in the Subject field of
+  the generated message.
 
 Changes from 2.9.1 to 2.9.2
 * Workaround for an age-old stupid, stupid, stupid Netscape bug, in
@@ -49,7 +63,6 @@ Changes from 2.8.0 to 2.8.1
   work.
 * The INSTALL file now makes it abundantly clear that you need a
   gnats-db.conf file even if you have only a single database.
-
 
 Changes from 2.7 beta to 2.8.0
 * Both the Gnats and Gnatsweb version numbers are now displayed in the

@@ -1,3 +1,71 @@
+==========  Gnatsweb 2.9.3 released ====================================
+
+2001-11-21  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl: Change $VERSION to 2.9.3.
+
+	* NEWS: Update for 2.9.3.
+	
+	* gnatsweb.pl: Add 'use Text::Tabs'.
+	- (view): Expand tabs to spaces, replace back-to-back
+	  occurrences of spaces with "&nbsp;" and a space.  This makes
+	  browsers render indented code correctly.  Thanks to Brad Garcia.
+
+	* INSTALL, TROUBLESHOOTING, gnatsweb.html, gnatsweb.pl: Minor
+	  changes to account for the move of GNATS infrastructure to
+	  savannah.
+	
+2001-11-20  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (submitnewpr): We now include a Reply-To header in
+	  change notification emails, consisting of all the recipients
+	  of the message (which means users replying will have themselves
+	  included on the To: list, but that is a minor inconvenience),
+	  the From: address (which is the person responsible for the PR)
+	  as well as the GNATS_ADDR.
+
+	* gnatsweb.pl (submitnewpr): Tell user that the page will refresh.
+	  Set refresh delay to 5 seconds.
+
+	* gnatsweb.pl: Add redirect after a new PR is submitted (this
+	  turned out to be surprisingly hard):
+	- (sendpr): Pass the return_url parameter through to the results
+	  page.
+	- (submitnewpr): Postpone call to page_start_html until we're sure
+	  we don't need special headers.  Add redirect code at the end.
+	  This code should have been spun off into a separate sub since we
+	  use it in several places, but since Gnatsweb 2.x is EOL, we
+	  won't bother.
+	- (get_pr_url): Modify so that when it is called with a PR number
+	  of 0, the pr parameter is left out of the URL.
+	- (get_createpr_url): New subroutine.  Returns a 'create' URL.
+	- (page_start_html): Use it for the Create URL in the button bar.
+	- (submitedit): Use the new redirect code written for submitnewpr.
+	  The old code issued invalid HTML.
+	- (page_start_html): Use $head_already_done to decide whether to
+	  print the <head> section of the page.
+	
+2001-11-15  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (query): Support queries on Submitter-ID.
+	- (parse_submitters): Construct $submitter_fullname for use on the
+	  query page.
+
+2001-11-03  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (delete_stored_query): Use refresh, not redirect,
+	  since that confuses Netscape.  Add workaround for MSIE's
+	  non-handling of refresh headers.
+
+2001-10-30  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (get_mailto_link): Remove special handling of
+	  Internet Explorer browser -- not all MSIE users use Outlook.
+	  Furthermore, newer versions of Outlook do not need the special
+	  quoting.
+	- (get_mailto_link): Put Synopsis, as well as category and PR
+	  number in the Subject field of the mailto link.
+
 ==========  Gnatsweb 2.9.2 released ====================================
 
 2001-10-23  Yngve Svendsen  <yngve.svendsen@clustra.com>

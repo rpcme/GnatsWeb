@@ -5,7 +5,7 @@
 # Copyright 1998-1999 - Matt Gerassimoff
 # and Ken Cox
 #
-# $Id: gnatsweb.pl,v 1.1.1.1.2.21 2001/10/23 11:16:16 yngves Exp $
+# $Id: gnatsweb.pl,v 1.1.1.1.2.31 2001/11/26 10:59:48 yngves Exp $
 #
 
 #-----------------------------------------------------------------------------
@@ -107,20 +107,20 @@ use CGI::Carp qw/fatalsToBrowser/;
 # 9/19/99 kenstir: CGI.pm-2.55's file upload is broken.
 use CGI 2.56 qw(-oldstyle_urls :all);
 use gnats qw/client_init client_exit client_cmd/;
+use Text::Tabs;
 
 # Debugging fresh code.
 #$gnats::DEBUG_LEVEL = 2;
 
 # Version number + RCS revision number
-$VERSION = '2.9.2';
-$REVISION = (split(/ /, '$Revision: 1.1.1.1.2.21 $ '))[1];
+$VERSION = '2.9.3';
+$REVISION = (split(/ /, '$Revision: 1.1.1.1.2.31 $ '))[1];
 
 # width of text fields
 $textwidth = 60;
 
 # where to get help -- a web site with translated info documentation
-#$gnats_info_top = 'http://www.hyperreal.org/info/gnuinfo/index?(gnats)';
-$gnats_info_top = 'http://sources.redhat.com/gnats/gnats_toc.html';
+$gnats_info_top = 'http://www.gnu.org/software/gnats/gnats_toc.html';
 
 # bits in %fieldnames has (set=yes not-set=no)
 $MULTILINE    = 1;   # whether field is multi line
@@ -502,6 +502,7 @@ sub sendpr
 	$q->p($q->submit('cmd', 'submit'),
 	" or ",
 	$q->reset(-name=>'reset')),
+    $q->hidden(-name=>'return_url'),
 	"<hr>\n",
 	"<table>";
   my $def_email = $global_prefs{'email'}
@@ -659,7 +660,6 @@ sub validate_new_pr
 sub submitnewpr
 {
   my $page = 'Create PR Results';
-  page_start_html($page);
 
   my $debug = 0;
   my(@values, $key);
@@ -685,6 +685,8 @@ sub submitnewpr
   my(@errors) = validate_new_pr(%fields);
   if (@errors)
   {
+    print_header();
+    page_start_html($page);
     page_heading($page, 'Error');
     print "<h3>Your problem report has not been sent.</h3>\n",
           "<p>Fix the following problems, then submit the problem report again:</p>",
@@ -714,6 +716,8 @@ EOT
   # Allow debugging
   if($debug)
   {
+    print_header();
+    page_start_html($page);
     print "<h3>debugging -- PR NOT SENT</h3>",
           $q->pre($q->escapeHTML($text)),
           "<hr>";
@@ -724,6 +728,8 @@ EOT
   # Send the message
   if(!open(MAIL, "|$site_mailer"))
   {
+    print_header();
+    page_start_html($page);
     page_heading($page, 'Error');
     print "<h3>Error invoking $site_mailer</h3>";
     return;
@@ -731,35 +737,61 @@ EOT
   print MAIL $text;
   if(!close(MAIL))
   {
+    print_header();
+    page_start_html($page);
     page_heading($page, 'Error');
     print "<h3>Bad pipe to $site_mailer</h3>";
     exit;
-  }
+   }
 
-  # Give feedback for success
+  # Return the user to the page they were viewing when they pressed
+  # 'create'.
+  my $return_url = $q->param('return_url') || get_script_name();
+  my $refresh = 5;
+  print_header(-Refresh => "$refresh; URL=$return_url",
+               -cookie => create_global_cookie());
+  # Workaround for MSIE:
+  my @args = (-title=>"$page - $site_banner_text");
+  push(@args, -bgcolor=>$site_background)
+          if defined($site_background);
+  push(@args, -style=>{-src=>$site_stylesheet})
+        if defined($site_stylesheet);
+  push(@args, -head=>meta({-http_equiv=>'Refresh',
+                           -content=>"$refresh; URL=$return_url"}));
+  print $q->start_html(@args);
+
+  # Print page banner, with button bar, without the <head> part:
+  page_start_html($page, 0, 1);
+
   page_heading($page, 'Problem Report Sent');
+
   print "<p>Thank you for your report.  It will take a short while for
 your report to be processed.  When it is, you will receive
 an automated message about it, containing the Problem Report
 number, and the developer who has been assigned to
 investigate the problem.</p>";
 
+  print "<p>Page will refresh in $refresh seconds...</p>\n";
+
   page_footer($page);
   page_end_html($page);
 }
 
 # Return a URL which will take one to the specified $pr and with a
-# specified $cmd.  For ease of use, when the user makes a successful edit,
-# we want to return to the URL he was looking at before he decided to edit
-# the PR.  The return_url param serves to store that info, and is included
-# if $include_return_url is specified.  Note that the return_url is saved
-# even when going into the view page, since the user might go from there
-# to the edit page.
+# specified $cmd.  For commands such as 'create' that have no
+# associated PR number, we pass $pr = 0, and this routine then leaves
+# out the pr parameter.  For ease of use, when the user makes a
+# successful edit, we want to return to the URL he was looking at
+# before he decided to edit the PR.  The return_url param serves to
+# store that info, and is included if $include_return_url is
+# specified.  Note that the return_url is saved even when going into
+# the view page, since the user might go from there to the edit page.
 #
 sub get_pr_url
 {
   my($cmd, $pr, $include_return_url) = @_;
-  my $url = $q->url() . "?cmd=$cmd&pr=$pr&database=$global_prefs{'database'}";
+  my $url = $q->url() . "?cmd=$cmd&database=$global_prefs{'database'}";
+  $url .= "&pr=$pr" if $pr;
   $url .= "&return_url=" . $q->escape($q->self_url())
         if $include_return_url;
   return $url;
@@ -780,6 +812,13 @@ sub get_viewpr_url
   return get_pr_url($viewcmd, @_);
 }
 
+# Return a URL to create a pr.  See get_pr_url().
+#
+sub get_createpr_url
+{
+  return get_pr_url('create', @_);
+}
+
 # Same as script_name(), but includes 'database=xxx' param.
 #
 sub get_script_name
@@ -795,19 +834,8 @@ sub get_mailto_link
 {
   my($pr,%fields) = @_;
   my $mailto  = $q->escape(scalar(interested_parties($pr, 1, %fields)));
-  my $subject = $q->escape("Re: $fields{'Category'}/$pr");
+  my $subject = $q->escape("Re: $fields{'Category'}/$pr: $fields{'Synopsis'}");
   my $body    = $q->escape(get_viewpr_url($pr));
-
-  # MSIE users fork Outlook and Outlook Express,
-  # they need semicolons and the &'s used to view-pr need more quoting
-  if ($ENV{'HTTP_USER_AGENT'} =~ /MSIE/)
-  {
-    my $ecomma     = $q->escape(",");
-    my $esemicolon = $q->escape(";");
-    my $ampsand    = $q->escape("&");
-    $mailto =~ s/$ecomma/$esemicolon/g ;
-    $body =~ s/$ampsand/%2526/g ;
-  }
 
   return "<a href=\"mailto:$mailto?Subject=$subject&Body=$body\">"
         . "send email to interested parties</a>\n";
@@ -877,8 +905,11 @@ sub view
     if ($fieldnames{$_} & $MULTILINE)
     {
       $valign = 'valign=top';
+      $val = expand($val);
       $val =~ s/$/<br>/gm;
       $val =~ s/<br>$//; # previous substitution added one too many <br>'s
+      $val =~ s/  /&nbsp; /g;
+      $val =~ s/&nbsp;  /&nbsp; &nbsp;/g;
       $val = mark_urls($val);
     }
     print "<tr><td $valign nowrap><b>$_:</b></td>\n<td>",
@@ -968,10 +999,8 @@ sub edit
 	$q->hidden(-name=>'Last-Modified',
 		   -value=>$fields{'Last-Modified'},
 		   -override=>1),
-        #$q->hidden(-name=>'pr', -value=>$pr, -override=>1),
-        #$q->hidden(-name=>'return_url'),
 	$q->hidden(-name=>'pr'),
-        $q->hidden(-name=>'return_url'),
+    $q->hidden(-name=>'return_url'),
         "<hr>\n";
 
   print "<table>\n";
@@ -1339,6 +1368,7 @@ sub submitedit
       {
         print MAILER "To: $mailto\n";
         print MAILER "From: $from\n";
+        print MAILER "Reply-To: $from, $mailto, $config{'GNATS_ADDR'}\n";
         print MAILER "X-Mailer: gnatsweb $VERSION\n";
         print MAILER "Subject: Re: $fields{'Category'}/$pr\n\n";
         if ($oldfields{'Synopsis'} eq $fields{'Synopsis'})
@@ -1367,21 +1397,35 @@ sub submitedit
   unlockpr($fields{'Number'});
 
   if ($lock_end_reached) {
-    # We print out the "Edit successful" message after unlocking the PR. If the user hits
-    # the Stop button of the browser while submitting, the web server won't terminate the
-    # script until the next time the server attempts to output something to the browser.
-    # Since this is the first output after the PR was locked, we print it after the unlocking.
-    # Let user know the edit was successful. After a 2s delay, refresh back
-    # to where the user was before the edit. Internet Explorer does not honor the
-    # HTTP Refresh header, so we have to complement the "clean" CGI.pm method
-    # with the ugly hack below, with a HTTP-EQUIV in the HEAD to make things work.
+    # We print out the "Edit successful" message after unlocking the
+    # PR. If the user hits the Stop button of the browser while
+    # submitting, the web server won't terminate the script until the
+    # next time the server attempts to output something to the
+    # browser.  Since this is the first output after the PR was
+    # locked, we print it after the unlocking.  Let user know the edit
+    # was successful. After a 2s delay, refresh back to where the user
+    # was before the edit. Internet Explorer does not honor the HTTP
+    # Refresh header, so we have to complement the "clean" CGI.pm
+    # method with the ugly hack below, with a HTTP-EQUIV in the HEAD
+    # to make things work.
     my $return_url = $q->param('return_url') || get_script_name();
     my $refresh = 2;
-    print_header(-Refresh => "$refresh; URL=$return_url");
-    print "<HTML><HEAD><TITLE>$page</TITLE>"
-          , "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"$refresh; URL=$return_url\"></HEAD>";
-    print "\n<BODY>\n";
-    page_start_html($page);
+
+    print_header(-Refresh => "$refresh; URL=$return_url",
+                 -cookie => create_global_cookie());
+    # Workaround for MSIE:
+    my @args = (-title=>"$page - $site_banner_text");
+    push(@args, -bgcolor=>$site_background)
+          if defined($site_background);
+    push(@args, -style=>{-src=>$site_stylesheet})
+          if defined($site_stylesheet);
+    push(@args, -head=>meta({-http_equiv=>'Refresh',
+                             -content=>"$refresh; URL=$return_url"}));
+    print $q->start_html(@args);
+    
+    # Print page banner, with button bar, without the <head> part:
+    page_start_html($page, 0, 1);
+
     page_heading($page, ($mail_sent ? 'Edit successful; mail sent'
                          : 'Edit successful'));
     print "<p>Page will refresh in $refresh seconds...</p>\n";
@@ -1420,6 +1464,11 @@ sub query_page
 		       -values=>\@responsible,
                -labels=>\%responsible_fullname,
 		       -default=>$responsible[0]),
+    "</td>\n</tr>\n<tr>\n<td>Submitter-ID:</td>\n<td>",
+    $q->popup_menu(-name=>'submitter_id',
+               -values=>\@submitter_id,
+               -labels=>\%submitter_fullname,
+               -default=>$submitter_id[0]),
 	"</td>\n</tr>\n<tr>\n<td>State:</td>\n<td>",
 	$q->popup_menu(-name=>'state',
 		       -values=>\@state,
@@ -2134,8 +2183,12 @@ sub delete_stored_query
 
     # Return the user to the page they were viewing when they pressed
     # 'delete stored query'.
-    print $q->redirect(-cookie => $expire_cookies,
-                       -location => $q->param('return_url'));
+    my $return_url = $q->param('return_url') || get_script_name();
+    print $q->header(-Refresh => "0; URL=$return_url",
+                     -cookie => $expire_cookies);
+    # Workaround for MSIE:
+    print "<HTML><HEAD><TITLE></TITLE>"
+          , "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0; URL=$return_url\"></HEAD>";
   }
 }
 
@@ -2362,11 +2415,13 @@ sub print_header
 #
 # arguments:
 #     $title - title of page
-#
+#     $no_button_bar - do not print the button bar
+#     $head_already_done - the <head> part has already been printed
 sub page_start_html
 {
   my $title = shift;
   my $no_button_bar = shift;
+  my $head_already_done = shift;
   my $debug = 0;
 
   # Protect against multiple calls.
@@ -2382,12 +2437,15 @@ sub page_start_html
   }
 
   # Call start_html, with -bgcolor if we need to override that.
-  my @args = (-title=>"$title - $site_banner_text");
-  push(@args, -bgcolor=>$site_background)
-        if defined($site_background);
-  push(@args, -style=>{-src=>$site_stylesheet})
-        if defined($site_stylesheet);
-  print $q->start_html(@args);
+  unless ($head_already_done)
+  {
+    my @args = (-title=>"$title - $site_banner_text");
+    push(@args, -bgcolor=>$site_background)
+          if defined($site_background);
+    push(@args, -style=>{-src=>$site_stylesheet})
+          if defined($site_stylesheet);
+    print $q->start_html(@args);
+  }
 
   # Add the page banner.  This banner is a string slammed to the right
   # of a 100% width table.  The data is a link back to the main page.
@@ -2427,6 +2485,7 @@ EOF
   my $url = $sn;
   $url .= "?database=$global_prefs{'database'}"
         if defined($global_prefs{'database'});
+  $createurl = get_createpr_url(0,1);
 
   $row = qq(<TR>\n<TD><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="3" WIDTH="100%">);
   $row .= qq(<TR BGCOLOR="$site_banner_background">\n<TD ALIGN="LEFT">);
@@ -2444,7 +2503,7 @@ EOF
   $row2 .= qq(<TABLE BORDER="1" CELLSPACING="0" BGCOLOR="$site_button_background" CELLPADDING="3">);
   $row2 .= qq(<TR>\n);
   $row2 .= qq(<TD><A HREF="$url" STYLE="$buttonstyle">MAIN PAGE</A></TD>);
-  $row2 .= qq(<TD><A HREF="$url&cmd=create" STYLE="$buttonstyle">CREATE</A></TD>);
+  $row2 .= qq(<TD><A HREF="$createurl" STYLE="$buttonstyle">CREATE</A></TD>);
   $row2 .= qq(<TD><A HREF="$url&cmd=query" STYLE="$buttonstyle">QUERY</A></TD>);
   $row2 .= qq(<TD><A HREF="$url&cmd=advanced%20query" STYLE="$buttonstyle">ADV. QUERY</A></TD>);
   $row2 .= qq(<TD><A HREF="$url&cmd=login%20again" STYLE="$buttonstyle">LOGIN AGAIN</A></TD>);
@@ -2607,6 +2666,7 @@ sub parse_submitters
     my($submitter, $full_name, $type, $response_time, $contact, $notify)
           = split(/:/);
     push(@submitter_id, $submitter);
+    $submitter_fullname{$submitter} = $submitter . ' - ' . $full_name;
     $submitter_contact{$submitter} = $contact;
     $submitter_notify{$submitter} = $notify;
   }
@@ -3493,7 +3553,6 @@ sub main
   {
     # User is submitting a new PR.  Store cookie because email address may
     # have changed.  This facilitates entering bugs the next time.
-    print $q->header(-cookie => create_global_cookie());
     initialize();
     submitnewpr();
     exit();

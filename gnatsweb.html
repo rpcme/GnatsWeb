@@ -6,8 +6,8 @@
   <BODY> 
 	 <H1>Gnatsweb User Guide</H1>
 	 <H2>Introduction</H2>
-	 <P>The <I>Gnatsweb</I> interface is a front-end to the <I>Gnats</I> problem
-		tracking system used to create, view and modify Gnats problem reports. Support
+	 <P>The <I>Gnatsweb</I> interface is a front-end to the <I>GNATS</I> problem
+		tracking system used to create, view and modify GNATS problem reports. Support
 		organizations can use it for tracking of issues related to products that are
 		supported (i.e. software, hardware, documentation, etc.) Problem reports are
 		used to notify <I>responsible</I> parties of problems. When the problems are
@@ -24,10 +24,10 @@
 		<LI><A HREF="#advquery">Advanced Query Page</A></LI>
 		<LI><A HREF="#qmatches">Query Results Page</A></LI>
 	 </UL>
-	 <P> For more information about Gnats, see the
-		<A HREF="http://sources.redhat.com/gnats/">Gnats home page</A>. </P><HR>
+	 <P> For more information about GNATS, see the
+		<A HREF="http://www.gnu.org/software/gnats/">GNATS home page</A>.</P><HR>
 	 <H2><A NAME="login">Login Page</A></H2>
-	 <P>The login page is used to login to the Gnats system. The first time
+	 <P>The login page is used to login to the GNATS system. The first time
 		Gnatsweb is used, this page is presented. After the first time, the
 		<A HREF="#main">main page</A> is displayed because the settings are stored in
 		cookies on the machine that has the web browser running. There is a button on
@@ -37,19 +37,19 @@
 	 <BLOCKQUOTE>
 		<DL>
 		  <DT><B>User Name:</B> (textbox) </DT>
-		  <DD>This is the Gnats user name to login as. </DD>
+		  <DD>This is the GNATS user name to login as. </DD>
 		  <DT><B>Password:</B> (textbox)</DT>
-		  <DD>This is the Gnats password for the user name.</DD>
+		  <DD>This is the GNATS password for the user name.</DD>
 		  <DT><B>Database:</B> (combobox)</DT>
 		  <DD>This selects the database to login to. The dropdown menu lists all
 			 the available databases.</DD>
 		  <DT><B>Login</B> (button) </DT>
-		  <DD>This logs into the selected Gnats database.</DD>
+		  <DD>This logs into the selected GNATS database.</DD>
 		</DL></BLOCKQUOTE>
 	 <P>If the user name and password are correct, the <A HREF="#main">main
 		page</A> will be shown.</P><HR>
 	 <H2><A NAME="main">Main Page</A></H2>
-	 <P>The main page is used to select the various operations within the Gnats
+	 <P>The main page is used to select the various operations within the GNATS
 		database. There are seven operations available from this page:</P>
 	 <BLOCKQUOTE>
 		<DL>
@@ -73,7 +73,7 @@
 			 Page</A>. Used for complex querying of existing problem reports.</DD>
 		  <DT><B>Login again:</B></DT>
 		  <DD>This button displays the <A HREF="#login">Login Page</A>. Used for
-			 selecting a different Gnats database.</DD>
+			 selecting a different GNATS database.</DD>
 		  <DT><B>Help:</B></DT>
 		  <DD>Displays the Gnatsweb User Guide.</DD>
 		</DL></BLOCKQUOTE> <HR>
@@ -84,7 +84,7 @@
 		<DL>
 		  <DT><B>Reporter's email:</B> (textbox)</DT>
 		  <DD>This is the person filing the new problem report. This is necessary
-			 because someone without access to the Gnats database may be the
+			 because someone without access to the GNATS database may be the
 			 <I>Originator</I> (described below).</DD>
 		  <DT><B>CC:</B> (textbox)</DT>
 		  <DD>Carbon copy the problem report to this email address. This is
@@ -111,7 +111,7 @@
 			 <I>non-critical</I>. This is a best guess (i.e. if the hardware catches fire,
 			 it should probably be <I>critical</I>). When creating a problem report, the
 			 severity level is often merely an educated guess. It will often be changed
-			 later on, based on the assessment of the Gnats administrator or the person
+			 later on, based on the assessment of the GNATS administrator or the person
 			 responsible for the problem category.</DD>
 		  <DT><B>Priority:</B> (combobox)</DT>
 		  <DD>Like severity, this is merely a guess at the priority level of the
@@ -144,9 +144,9 @@
 		  <DD>If a workaround or fix has been determined, this is the place to
 			 put that information.</DD>
 		  <DT><B>Submit</B> (button)</DT>
-		  <DD>This submits the problem report to the Gnats database. Email will
+		  <DD>This submits the problem report to the GNATS database. Email will
 			 be sent to the <I>Reporter's email</I> and <I>Originator's</I> email addresses,
-			 and all other parties listed in the <I>Others to notify</I> field. The Gnats
+			 and all other parties listed in the <I>Others to notify</I> field. The GNATS
 			 administrator and the <I>responsible</I> person also gets a copy.</DD>
 		  <DT><B>Reset</B> (button)</DT>
 		  <DD>Reset all fields to defaults. Most the textboxes are cleared and
@@ -189,7 +189,7 @@
 			 usually collected for use in an update report to be distributed with the
 			 released software.</DD>
 		  <DT><B>Submit Edit</B> (button)</DT>
-		  <DD>This submits the changes to the Gnats database. Another page is
+		  <DD>This submits the changes to the GNATS database. Another page is
 			 displayed with the results. If fields are missing or incorrectly filled out,
 			 the changes necessary to fix the problem are displayed. By using the 'back'
 			 button in the web browser, the user can go back to the problem report, correct
@@ -199,7 +199,7 @@
 			 problem report.</DD>
 		</DL></BLOCKQUOTE> <HR>
 	 <H2><A NAME="view">View Problem Report Page</A></H2>
-	 <P>The View page is used to display a Gnats problem report without changing
+	 <P>The View page is used to display a GNATS problem report without changing
 		it. It has the same fields described in the <A HREF="#create">Create Problem
 		Report Page</A> and the <A HREF="#edit">Edit Problem Report Page</A>, together
 		with two additional buttons and a link:</P>
@@ -310,7 +310,7 @@
 		formats.</P>
 	 <H3>Search Individual Fields</H3>
 	 <P>The Search Individual Fields sub-section is used for matching based on a
-		specific field in the Gnats problem report. All the fields have a textbox for
+		specific field in the GNATS problem report. All the fields have a textbox for
 		doing regular expression searches. Where applicable, fields have a multi-select
 		listbox that can be used. When nothing is entered for the textbox or selected
 		in the listbox, those fields are not used in the match. Here are the valid

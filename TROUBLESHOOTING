@@ -97,10 +97,10 @@
     6. Getting help.
 
        - Go through the TROUBLESHOOTING document.
-       - Try sifting through the GNATS-related mailing list archives
-         at http://sources.redhat.com/ml/
-       - If you still have problems, try posting to the gnats-devel or
-         bug-gnats mailing lists.  How to subscribe is covered at
-         http://sources.redhat.com/gnats/.  Please avoid posting until
-         you are completely certain that there is nothing relevant in
-         the mailinglist archives.
+       - Try sifting through the GNATS-related mailing list archives at
+         http://savannah.gnu.org/mail/?group_id=65
+       - If you still have problems, try posting to the help-gnats
+         mailing list.  Subscribe from
+         http://savannah.gnu.org/mail/?group_id=65.  Please avoid
+         posting until you are completely certain that there is
+         nothing relevant in the mailinglist archives.
