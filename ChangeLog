@@ -1,0 +1,715 @@
+==========  gnatsweb 2.8.2 released ====================================
+
+2001-06-26  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (help_page): Fix a serious security hole where an
+	attacker would be able to read any file on the system or run any
+	command to which the web server process user had access to by
+	submitting a rogue help_file parameter in the URL. help_file is
+	now hardcoded to 'gnatsweb.html'.
+
+==========  gnatsweb 2.8.1 released ====================================
+	
+2001-06-04  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* Remove the last vestige of sourceware.cygnus.com from the help
+	  URL and change version number to 2.8.1
+
+	* INSTALL: Clarified item 5, it should now be abundantly clear
+	  that you need a gnats-db.conf file even if you have only a
+	  single database.
+
+	* gnatsweb.pl (parse_categories): No longer exclude 'pending' from
+	  the category search list. This restriction made little sense.
+
+	* gnatsweb.pl: use CGI.pm with oldstyle URLs. Otherwise,
+	  redirection back to the query page after submitting edits won't
+	  work.
+
+	* gnatsweb.pl (one_line_submit): Gnatsweb 2.8.0 actually required
+	  JavaScript for the main menu to work. This had been added to
+	  Gnatsweb 2.7 beta in order to preserve vertical space. Requiring
+	  JavaScript is unacceptable for many sites, so we revert to the
+	  old style.
+
+==========  gnatsweb 2.8.0 released ====================================
+
+2001-05-02  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (view): Use error_page to output errors.
+
+	* gnatsweb.pl (view, edit): Display PR number in page title.
+
+	* gnatsweb.pl (mark_urls): Added a couple of characters to the
+	  regexp in order to properly mark groups.google.com's somewhat
+	  bizarre URLs.
+
+==========  gnatsweb 2.8.0 beta (nonpublic) ============================
+
+2001-05-02  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl: Version number changed to 2.8.0.
+
+        * gnatsweb.pl: (main_page): Display the Gnats version number in
+          the footer, together with the Gnatsweb version number.
+
+	* gnatsweb (submitedit): Move the output of the 'Edit successful'
+	  message so that it now happens after the unlocking of the PR.
+	  This solves a problem where a lock file would be left over if
+	  the user pressed the browser's 'stop' button during a submit.
+
+2001-05-01  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (submitedit): Handle errors from lockpr. Previously,
+	  even if lockpr returned an error (together with undef in place
+	  of the complete PR), Gnatsweb would go on attempting to submit
+	  edits based on this blank PR, stopping only when the
+	  Last-Modified dates were being compared.
+
+	* README: Updated somewhat.
+	  INSTALL: Updated and significantly expanded item 5 about 'make
+	  test', explicitly mentioning /etc/gnats-db.conf in connection
+	  with the db_alias parameter passed to make test. Added 2 known
+	  problems at the bottom of the file.
+	  NEWS: New file, with a summary of the changes from 2.7 beta to
+	  2.8.0.
+
+	* gnatsweb.pl (display_query_results, page_heading) Fix a couple
+	  of variable declarations that were generating perl -w warnings.
+	  Do a semi-ugly HTML hack where nowrap, which is supposed to be
+	  a boolean attribute, is replaced with nowrap=>'1'. Plain
+	  'nowrap' generates a perl -w warning from CGI.pm.
+
+	* gnatsweb.pl (query_page, display_query_results, sendpr,
+	  print_attachments, edit, login_page): Systematic cleaning of
+	  HTML. Tons of table tags terminated.
+
+	* gnatsweb.pl (advanced_query_page): Add a line below 'Closed
+	  After' and 'Closed Before' reminding users to uncheck 'Ignore
+	  Closed'. Lots of HTML fixes. Added a little bit of vertical space
+	  between tables.
+
+2001-04-30  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (error_page, submitedit): Enclose $err_text in
+	  paragraph tags.
+
+	* gnatsweb.pl (view, edit): Add a check for non-digit characters
+	  in PR numbers. If such characters are found, an appropriate
+	  error message is issued. gnatsd will actually accept PR numbers
+	  on the format string/xxxx, where xxxx is a number, and return
+	  the appropriate PR. However, when edits are submitted to such a PR,
+	  a new PR with the "number" 'string/xxxx' would be created, with
+	  the same category as the original PR. This is a workaround for
+	  that problem.
+
+	* gnatsweb.pl: Add some missing paragraph tags in order to make
+	  stylesheet formatting work properly.
+
+	* gnatsweb.pl: (page_heading): Set the width of the table
+	  containing the page heading and database, username and access
+	  level to 100%. Opera would display a too narrow table when the
+	  width wasn't explicitly set.
+
+	* gnatsweb.pl: (page_start_html): Make the banner a bit smaller,
+	  and use a different typeface. Should work well in all browsers.
+
+	* gnatsweb.pl: (display_query_results): Correct a couple of
+	  typos in the escapeHTML calls.
+
+	* gnats.pm (get_reply): gerror() was not being called when server
+	  returned $CODE_NO_PRS, as this was not being considered an
+	  error. This made Gnatsweb attempt to 'edit' or 'view' PRs with
+	  any number typed into the main page edit or view textfields,
+	  whether the PR with that number actually existed or not. Editing
+	  caused a new PR to be created, with the erroneous number. It
+	  basically accepted any input from these textfields, making it
+	  possible to create PRs with "numbers" made out of arbitrary
+	  strings.
+	
+	* gnatsweb.pl (readpr): Add an if clause to trigger on errors
+	  from the gnats.pm client_cmd subroutine. This fixed the problem
+	  mentioned above.
+
+	* gnatsweb.html: Clean up HTML, fix spelling, remove some <I>'s
+	  and <B>'s that made the text less readable. Some slight
+	  rephrasing in order to clarify things.
+
+	* gnatsweb.pl (main): Add an explicit link to the automatic
+	  redirection page. Fix due to Mark Kuchel.
+
+        * gnatsweb.pl (main): Generate proper cookie paths. Fix
+          due to Mark Kuchel.
+
+	* gnatsweb.pl (submitedit): Issue an HTTP-EQUIV Refresh META tag in
+	  HEAD, in addition to the standard Refresh HTTP header. This
+	  makes the post-edit redirect work in MS Internet Explorer.
+
+	* gnatsweb.pl (login_page_javascript): Use correct <SCRIPT
+	  LANGUAGE>.
+
+2001-04-29  Yngve Svendsen  <yngve.svendsen@clustra.com>
+
+	* gnatsweb.pl (download_attachment): Insert a conditional to send
+	  the header based on HTTP_USER_AGENT. MS Internet Explorer 5.5
+	  would attempt to save downloaded attachments under the same name
+	  as the Gnatsweb script file, typically gnatsweb.pl. This is
+	  because MSIE handles the HTTP header "Content-Disposition:
+	  attachment" wrongly. It needs "file" instead of "attachment".
+
+	* gnatsweb.pl (decode_attachment): Editing bugs with attached
+          files used to bomb out trying to chomp a constant string. Fix
+          due to Tommi Virtanen.
+	
+	* gnatsweb.pl (mark_urls): New function. 
+	  (view): Use it.
+	  (edit): Likewise.
+	  This is basically Tom Tromey's patch for Gnats 4 Gnatsweb 
+	  backported to 2.7beta.
+
+	* gnatsweb.pl: Remove the original authors' e-mail addresses,
+	  they are no longer valid.
+
+	* gnatsweb.pl: New configuration variable $site_stylesheet.
+	  (page_start_html): Use it.
+
+	* gnatsweb.pl: Bump version number to 2.8.0-dev.
+
+	* gnatsweb.pl: (display_query_results): Apply CGI.pm's escapeHTML
+	  to field contents when printing the query results. Allow the
+	  Synopsis field to wrap.
+
+==========  gnatsweb 2.7 beta ===================================
+
+2000-01-15  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: Gnatsweb will no longer allow you to store a query if
+	this would result in more than 20 cookies.  Otherwise random
+	cookies get dropped and things start acting weird.  20 is a
+	magical number as defined in
+	http://home.netscape.com/newsref/std/cookie_spec.html.
+
+	* Enhancement: Added a 'View for bookmarking' link, which reloads
+	the same query so that you can bookmark it in your browser.
+
+2000-01-14  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: Modifying the CC list (X-GNATS-Notify header) was not
+	working if X-GNATS-Notify existed but was empty.
+
+2000-01-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement: Main page has been shrunk vertically so that all
+	buttons fit on one page.
+
+2000-01-12  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement: If there's a query name, show it on the Query
+	Results page.
+
+2000-01-11  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement: Allow sorting of query results by Arrival-Date,
+	Last-Modified, and Closed-Date.
+
+2000-01-09  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Usability enhancement: If a PR edit succeeds, you are returned
+	(refreshed) to the page you were looking at before you edited the
+	PR.  It behaves similarly for viewing a PR.  So, if you query,
+	then view, then edit, after submitting the edit you will see
+	"edit succeeded" briefly, then your query will be reexecuted.
+
+	* Experiment: Use CGI::Pretty instead of CGI so that output HTML
+	is more readable.  As if you care.  Nah..that screws up the
+	user/access/date heading.
+
+	* Experiment: Use <table cols=N> to see whether cols= speeds up
+	large table displays.  The cols= is a Netscape extension.
+	Nah...didn't make any difference.
+
+	* New feature: Now the site_callback can 
+	- add buttons to the bottom of the main page
+	  (args: 'main_page_bottom_buttons)
+	- handle new commands (param 'cmd') added by those buttons
+	  (args: 'cmd', $cmd)
+
+2000-01-08  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: If you don't have MIME::Base64 and you don't want to
+	use file attachments, you should no longer get the annoying errors
+	in the error_log.
+
+	* New feature: The more comprehensive help text that Matt wrote is
+	now available via the Help button.
+
+	* New feature: New module chart.pm thanks to the generous
+	contributions of Mike Sutton <suttonm@saic.com>.
+	
+2000-01-05  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Reorganization: The code which talks to gnatsd is separated out
+	into a new module called gnats.pm.  This module will make it
+	easier for people to write small scripts to perform
+	special-purpose queries.  I intend to use it to implement a few
+	graphs.
+
+1999-12-24  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature: If you enable setting the Responsible person on the
+	Create Problem Report page (by turning off the $SENDEXCLUDE flag),
+	then the default value of Responsible is '<default>' which gets
+	removed when the PR is sent.
+
+1999-12-18  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: Don't use 'diff -u' during 'make test'; not everyone
+	has gnu diff.
+
+	* New features: Now the site_callback can
+	- filter the available list of databases
+	  (args: 'list_databases')
+	- supply the list of valid values for an enum field
+	  (args: 'edit_pr', category, fieldname)
+	- provide a site-specific PR sort routine
+	  (args: 'sort_query', 'custom', 'checking_if_custom_sort_exists')
+	  (args: 'sort_query', sort_name, @pr_array)
+	Patch by Robert Lupton the Good <rhl@astro.princeton.edu>.
+
+	* New feature: Query results now prints the date at the top of the
+	page.
+	Patch by Robert Lupton the Good <rhl@astro.princeton.edu>.
+
+1999-12-03  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: $GNATS_ADDR should not have been copied on email sent
+	after an edit.  Now $GNATS_ADDR is only copied on email sent using
+	the "send email" link.
+
+==========  gnatsweb 2.6 released ===================================
+
+1999-11-30  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement: If user does not have cookies enabled, they now get
+	a warning on the Login page.  Previously, you would have to submit
+	the login page before you got the warning, then you would have to
+	go back and resubmit the page.  A little JavaScript goes a long
+	way.
+
+1999-11-27  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement: If DEFAULT_RELEASE is set in the gnats config file,
+	then it is now used as the default value in new PR's.
+	Patch by Brian Cameron <Brian.Cameron@Eng.Sun.COM>.
+
+	* Bug fix: In "send email" link, include GNATS_ADDR.
+	Patch by Jason Molenda <jsm@cygnus.com>.
+
+	* Enhancement: Reversed the default sort, so that new PR's appear
+	before older ones.  Added some more debug prints.
+	Patch by Tim Riker <TimR@CalderaSystems.com>.
+
+1999-11-18  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New features: Now the site_callback can
+	- supply default values for various things until they are
+	specified and stored in the user's cookies: Reporter's
+	email...(more coming?).  This facilitates that first PR for new
+	people.
+	- print new buttons at top+bottome of main page.
+	- print stuff at the top of individual fields on the sendpr and
+	editpr pages.
+
+	See gnatsweb-site-sente.pl for	examples.
+
+	* Bug fix: The default list of columns displayed for a query was
+	empty; now it isn't.  You can still get the empty list if you
+	explicitly turn off all columns.
+
+==========  gnatsweb 2.6 beta2 released ===================================
+
+1999-11-17  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature: Now all links and forms contain the database param,
+	so that you can keep multiple databases open in multiple browser
+	windows.
+
+==========  gnatsweb 2.6 beta released ===================================
+
+1999-11-14  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature? Cookies are now stored with path=/.  I don't know
+	if this'll help IE users or not; I actually did it to share
+	cookies between my test web and my main web.  You should still be
+	able to get to your stored queries, and even delete them.
+
+	* New feature: If you follow a URL such as
+	http://www.x.com/cgi-bin/gnatsweb.pl?cmd=view&database=main&pr=1269
+	and you are forced to login, then after logging in you will be
+	redirected to the requested age.  I tried doing this with a
+	redirect but that didn't work; had to use a somewhat ugly
+	zero-delay refresh.  If you can figure that out I'd be grateful.
+
+	* New feature: Split cookies into a global cookie (column
+	preference and email addr) and a db-specific cookie.  That way you
+	don't have to keep typing in different passwords if you change
+	db's.
+
+	* Code reorg: Cleaned up the main proc especially w.r.t. the
+	cookie-setting stuff.  Now all of the preference settings happen
+	at once, and there is only one 'switch' over all of the commands.
+	However, if you don't have cookies enabled I probably broke the
+	detection of this error.
+
+1999-11-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature: Added a button to delete stored queries.
+	Patch by Robert Lupton the Good <rhl@astro.princeton.edu>.
+
+	* Bug fix (get_mailto_link): MSIE users need special handling in
+	the mailto: link.
+	Patch by <ralph_pursifull@am.exch.hp.com>.
+
+==========  gnatsweb 2.5 released ===================================
+
+1999-10-16  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: Attachment file names are now stripped of any path
+	elements, so that the browser doesn't prompt you to save,
+	e.g. c:\windows\system.ini
+
+	* New feature: In the Query Results page, there is now an edit
+	link next to the view link, if you have edit priviledges.
+
+1999-10-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature: If you have an "unknown" category, then gnatsweb
+	will use it as the default, and issue an error if somebody tries
+	to submit a PR with Category=unknown.
+	Patch by Robert Lupton the Good <rhl@astro.princeton.edu>.
+
+1999-10-01  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: When parsing a PR with a description field containing
+	From:, gnatsweb would erroneously save that as the originator's
+	email address.
+	Patch by Elgin Lee <ehl@terisa.com>.
+
+1999-09-28  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: For release-based gnats, "target" should have been
+	"quarter".
+
+1999-09-24  Ken Cox  <kenstir@special-sauce.senteinc.com>
+
+	* Bug fix (main): Gnatsweb was not handling failed logins
+	correctly.  Thanks to Robert Abatecola <robert@tsgus.com>
+	for the fix.
+
+==========  gnatsweb 2.5 beta2 ======================================
+
+1999-09-23  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix: An extra blank attachment was getting added during
+	edit.  Now it isn't.
+
+	* New feature: Can now delete file attachments.
+
+	* Enhancement: gnatsweb-site.pl can now set $site_post_max.
+	If this is set, and a post exceeds this limit, then gnatsweb will
+	fail with an error.  This prevents somebody from swamping your
+	server by attaching a huge file.
+
+	* Enhancement: Now sets cookie only when the cookie values
+	change.  This makes it much less annoying for people who have
+	cookie prompting turned on.
+	Patch by Ronald J. Kimball <rkimball@vgi.com> and
+	Robert Abatecola <robert@tsgus.com>.
+
+1999-09-20  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature: gnatsweb-site.pl can now override basic color
+	selections without using the complicated site_callback method.  I
+	do this so that I can tell visually when I'm running a test
+	version of gnatsweb and when I'm running the production version.
+	See $site_background, $site_banner_foreground,
+	$site_banner_background.
+
+==========  gnatsweb 2.5 beta ======================================
+
+1999-09-19
+
+	* New feature: Experimental support for file
+	attachments in the Unformatted field.  Use MIME::Base64 package
+	because it makes life easy.  Looked at but did not use MIME-tools
+	for creating and parsing the attachments, because it required that
+	too many packages be installed (it contains 21 packages and it
+	requires 5 more).  For this to work you need CGI.pm-2.56 and
+	any version of MIME::Base64.
+
+	This I consider this support experimental because
+            - it's tested, but not all that thoroughly
+            - it requires you to get new perl packages
+              CGI.pm-2.56
+              MIME::Base64
+            - there is as yet no way to delete file attachments
+            - uploading a big file can cause the appearance that gnatsweb
+	      is hung.  I think a workaround is to set $CGI::POST_MAX
+	      but I haven't tried it.
+
+	* Enhancement: Added 'send email' link to edit page.  Used to be
+	present only on view page.
+
+	* Enhancement: Added submit + reset buttons to top of
+	Create PR form.
+
+	* Enhancement (test.pl): Die if loading gnatsweb.pl or
+	gnatsweb-site has errors.
+	Patch from Ronald J. Kimball <rkimball@vgi.com>
+
+	* Enhancement (validate_email_field): Used regexp donated by
+	rkimball@vgi.com to allow @ in email addresses only if it's
+	followed by what looks more or less like a domain name.
+
+	* Bug fix (submit_stored_query): Must use full (not relative) URL
+	in redirect, to work around bug interacting with Netscape
+	Enterprise Server 3.5.1.
+	Patch from Elgin Lee <ehl@terisa.com>.
+
+	* Bug fix (initialize): Keyword query should have been 'kywd' not
+	'keyw'.
+	Patch from Elgin Lee <ehl@terisa.com>.
+
+	* Bug fix (sendpr): Removed "CC" capability, as it was causing too
+	much confusion.  That field would only send a copy of the initial
+	PR, but wouldn't put you on the X-Gnats-Notify list; everyone here
+	thought it would. Now there are only "Reporter's email" and "CC
+	these people on PR status email".  Also, the latter list gets a
+	copy of the initial PR.  Hopefully that will clear up the
+	confusion.
+
+	* Bug fix (sendpr): The X-Gnats-Notify field was not handling
+	lists of email addresses properly.  Now it is.
+	Patch from James Lin <james@jeditech.com>.
+
+	* Bug fix (submitedit): Really fixed the following bug:
+	When sending mail, use email address in
+	responsible file as From, if present.
+	Reported by Jason Molenda <jsm@cygnus.com>.
+	Thanks, Carl Lindberg for pointing this out.
+
+==========  gnatsweb 2.4 released ======================================
+
+1999-07-27  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Enhancement?:  Added HTML help (gnatsweb.html) provided by Matt.
+	As yet, there is no way to get to this help file from within
+	gnatsweb.  A patch to do this would be appreciated.  Note that to
+	keep installation drop-dead simple, this HTML help should be
+	served up by gnatsweb itself, not installed in a separate file
+	(which for an Apache server would need to be installed into a
+	separate directory).
+
+	* Requested enhancement: Use version number (not revision number)
+	on main page.
+
+	* Bug fix (get_reply): Gnatsweb was mangling some gnatsd error
+	messages so as to make them ungrammatical.
+	Reported by Jason Molenda <jsm@cygnus.com>.
+
+	* Bug fix (submitedit): When sending mail, use email address in
+	responsible file as From, if present.
+	Reported by Jason Molenda <jsm@cygnus.com>.
+
+1999-06-25  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Requested enhancement:
+	(sendpr): Description text area is larger (8 lines) Environment is
+	smaller (2 lines).
+
+	* Bug fixes:
+	(display_query_results): Carl Lindberg fixed a bug in the results
+	display when using apache + mod_perl.
+	(validate_email_field):  Carl Lindberg made a change to allow
+	non-qualified email addresses.
+
+	* Speed enhancement:
+	Removed 'use POSIX' since it's not needed.
+
+1999-06-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* New feature:
+	The "send email to interested parties" link now includes in the
+	body of the message the URL which you can use to view the PR in
+	question.
+
+	* Bug fix:
+	The "send email to interested parties" link is now properly URL
+	encoded.
+
+1999-05-30  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix:
+	X-gnatsweb-version header was being thrown away by GNATS.  Changed
+	to `X-Send-Pr-Version: gnatsweb-$VERSION' so that it wouldn't be.
+	Reported by rickm.
+
+1999-05-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* Bug fix:
+	Replaced font() with $q->font() for old CGI.pm's.
+
+==========  gnatsweb 2.3 released ======================================
+
+1999-05-08  Ken Cox  <kenstir@special-sauce.senteinc.com>
+
+	* Requested enhancement: Reporter's email address is now shown on
+	the view and edit pages.
+
+	* Bug fixes:
+	(initialize): Fixed bug reported by Thomas A Peterson
+	<tap@htc.honeywell.com>:  If a user has logged in, then somebody
+	changes their gnatsd password, then gnatsweb got stuck; it would
+	try the old password without presenting the login screen.  Now for
+	the 'chdb' and 'user' commands, failure takes you to the login
+	screen.
+	(main): Use 'warn' to report compilation errors in
+	'gnats-site.pl'.  Previously these errors were not being reported
+	anywhere.
+	(everywhere): Use '$q->escapeHTML' instead of 'CGI::escapeHTML',
+	as the latter was not working for folks with old CGI.pm's.
+
+	* Audit-Trail feature (submitedit): Since no conclusion was
+	reached on the gnats mailing list re: the redesigned Audit-Trail
+	format and how to change all of the programs to support it, I
+	implemented a gnatsweb-only feature.  In the site_callback you can
+	set a field's AUDITINCLUDE flag; if the flag is set then changes
+	in that field are recorded in the Audit-Trail.  Multitext fields
+	are indented when their old/new values are printed.  By default,
+	the only fields which have the AUDITINCLUDE flag set are
+	Responsible and State.
+
+1999-04-25  Ken Cox  <kenstir@special-sauce.senteinc.com>
+
+	* Bug fixes:
+	(interested_parties): Fixed notify problems reported by someone.
+	Since MLPR is not working as expected, do the work in this sub.
+	(trim_responsible): Fixed bug reported by Matt.  Don't lowercase
+	the Responsible name address, don't confuse Responsible with email
+	addresses.
+
+	* View PR page: Display a mailto link for sending email to all
+	interested parties.
+
+1999-04-21  Ken Cox  <kenstir@special-sauce.senteinc.com>
+
+	* PR Notify lists: Now editors can add themselves to the list of
+	people who get notified when a PR changes state, by changing
+	"X-GNATS-Notify".  This is also available when creating a new PR.
+
+	* New PR validation: submitnewpr() now performs more error
+	checking on a new PR before mailing it.
+
+	* Bug fixes:
+	test.pl: Fixed tests so that they don't fail for lines beginning
+	with '.'.  RickM #22.
+	(initialize): Removed 'pending' from category list.
+	(submitedit): No longer gives an error if it trims old-style
+	'Responsible: kenstir (Ken Cox)' to 'Responsible: kenstir'.
+	(praddr): Patch from Carl to support blank responsible field.
+
+1999-04-17  Ken Cox  <kenstir@special-sauce.senteinc.com>
+
+	* Better test harness: Does query, then uses those PR's for
+	parsepr/unparsepr test.
+
+	* In email notifications, include database name in URL.
+
+==========  gnatsweb 2.2 released ======================================
+
+1999-04-17  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* site_callback: New reason 'initialize', lets the site_callback
+	muck with the global data structures if desired.
+	Suggested by Carl_Lindberg@BLaCKSMITH.com.
+
+	* Advanced Query page:
+	- Added reset button.  RickM #8.
+	- Sort category, submitter_id, responsible lists.  RickM #5.
+	- Reordered date queries on Advanced Query page, as requested by
+	RickM #6.
+	- Added GNATS_RELEASE_BASED date queries.
+
+	* Create PR page: Submitter-Id and Originator are now visible;
+	Submitter-Id is treated as an enumerated field.  Both are
+	remembered via the cookie.
+
+	* Misc fixes:
+	- New PR no longer escapes leading '.' characters.  RickM #23.
+	- No more blank cells in query results table.
+	- Check 2 common places for sendmail, before bombing
+	out with a helpful message.  Fixes reports of gnatsweb install
+	trouble on solaris.
+	- Can now display and sort by Confidential, Release, Submitter-Id.
+	RickM bug #3, #10.
+
+	* Use scrolling_list instead of checkbox_group on query page.  Was
+	beginning to have too many unaligned checkboxes.
+
+	* New $site_release_based var controls display of fields added by
+	compiling gnats with -DGNATS_RELEASE_BASED
+	Incorporates spirit of patches by Paul Traina <pst@juniper.net>.
+
+1999-04-14  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* gnatsweb.pl: Replaced CGI function calls with method
+	invocations, e.g. Tr() with $q->Tr().  This is more in keeping
+	with mg's style, and clears up problems which Martin Apel
+	<apel@tecmath.de> had using perl 5.004_04.
+
+1999-04-13  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* gnatsweb.pl (view): Only print 'edit' button on View page if
+	user can edit.  RickM bug #1.
+
+1999-04-12  Kenneth H. Cox  <kenstir@abraham.senteinc.com>
+
+	* gnatsweb.pl (submitedit): Don't complain if you can't get the
+	email address of the old Responsible; it may have been invalid, or
+	they may have left the company.
+	Reported by Carl_Lindberg@BLaCKSMITH.com.
+	(edit): When editing a PR, trim Responsible field as if it were an
+	email address  Carl reports that his PR's from gnats 3.2 look this
+	way.
+	(sendpr, edit): Shift 'all' off of @responsible and @state.
+	Reported by Carl.
+
+==========  gnatsweb 2.1 released ======================================
+
+* Fixed Advanced Query page: multi-selection listboxes weren't working;
+was querying for "|kenstir".  Patch suggested by
+Carl_Lindberg@BLaCKSMITH.com.
+
+* site_callback() extended.  Now called for additional reasons:
+        page_footer --   can print extra stuff near the bottom of the
+                         page, e.g. to add buttons on the view page
+        page_end_html -- can extend the absolute end of the page
+Requested by Carl_Lindberg@BLaCKSMITH.com.
+
+* --- INCOMPATIBILE CHANGES to site_callback() ---
+  - When the $reason is 'page_heading', the argument list is different.
+    See gnatsweb-site-sente.pl for example.  Changed for consistency.
+  - No need for reason 'view_postlude'; can be done with 'page_footer'.
+
+Changes in 2.0:
+
+* Stored queries.
+
+* Query results can be sorted by clicking on a column heading.
+
+* Advanced query page for access to full power of gnats.
+
+* Integrated with Matt Gerassimoff's "gnats.pl" for gnatsd hipness.
+	 LocalWords:  gnatsweb html bookmarking bookmark CC reexecuted CGI cols
+
+	 LocalWords:  Netscape callback args param cmd

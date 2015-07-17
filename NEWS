@@ -1,0 +1,55 @@
+Current Version: 2.8.2
+See the file ChangeLog for the details of all changes.
+
+Changes from 2.8.1 to 2.8.2
+* Fixed serious security hole allowing a attacker to read files and
+  execute commands remotely on the gnatsweb server. See ChangeLog for
+  the full monty.
+
+Changes from 2.8.0 to 2.8.1
+* Redirect after submitting edits wasn't working on systems with a
+  new CGI.pm. This has been fixed.
+* We now let people search for PRs with category 'pending'.
+* We no longer by default require JavaScript for the main menu to
+  work.
+* The INSTALL file now makes it abundantly clear that you need a
+  gnats-db.conf file even if you have only a single database.
+
+
+Changes from 2.7 beta to 2.8.0
+* Both the Gnats and Gnatsweb version numbers are now displayed in the
+  main page footer.
+* If a user pressed the 'Stop' button of the browser right after
+  pressing 'Submit' on the Edit PR page, the PR would not be properly
+  unlocked. This has been fixed in a hopefully watertight way.
+* If edits were submitted to a locked PR, Gnatsweb would not catch the
+  error, and instead display a confusing error message saying that the
+  PR had been modified since you started editing it. Gnatsweb now
+  properly warns of a locked PR and stops the submission.
+* Documentation updates to avert problems when people install Gnatsweb
+  on top of a multiple-database Gnats.
+* The page banner is now a little smaller, and the text "gnatsweb" is
+  now displayed in a smaller typeface.
+* On the Advanced Query Page, we now display a line below 'Closed
+  After' and 'Closed Before' reminding users to uncheck 'Ignore
+  Closed'.
+* A bug where users would be able to create new PRs with PR numbers
+  composed both out of letters and numbers has been corrected.
+* When a non-existing PR number was typed into the 'view' or 'edit'
+  textboxes on the front page, no error message would be given, and
+  the user would be presented with a blank PR. Checks have been added
+  to prevent this.
+* Internet Explorer users are now being properly redirected to the
+  Gnatsweb main page after submitting an edit.
+* Internet Explorer would try to give downloaded attachments the same
+  name as the gnatsweb script file itself. This has been fixed.
+* Editing PRs with attachments caused Gnatsweb 2.7 beta to crash. This
+  has been fixed.
+* URLs in PR text are now being automatically converted to clickable
+  links when PRs are displayed.
+* Fixed a bug where HTML tags in PR fields weren't being properly
+  escaped before being displayed in the query results.
+* It is now possible to link an external stylesheet to all Gnatsweb
+  pages. The Gnatsweb-generated HTML has been thoroughly cleaned up in
+  order to support stylesheets better.
+

@@ -1,0 +1,112 @@
+
+                   Gnatsweb - web front-end to gnats
+
+                           Installation Guide
+
+
+Quick start for the impatient
+=============================
+
+    1. Install gnatsd, the gnats network server.  Gnatsweb doesn't run
+       without it.
+
+    2. Configure gnatsd to allow host access to your web server.  Here
+       are two different ways to accomplish this:
+
+       a. Grant 'edit' access the web server in the
+          gnats-adm/gnatsd.conf file, thus giving everyone with access
+          to the web server edit access to your Gnats database.
+          Gnatsweb will still prompt for a username/password; this
+          username will be used for the Audit-Trail, but you don't need
+          to put the username into the gnats-adm/gnatsd.access file.
+
+       b. Grant restricted access only (such as 'view' or 'none') to the
+          web server in the gnats-adm/gnatsd.conf file.  Grant higher
+          access to individual users by adding username/password entries
+          in the gnats-adm/gnatsd.access file.
+
+       If you want more restrictions than provided by those solutions,
+       consider restricting access to your web server, or the particular
+       CGI directory where you plan to install gnatsweb.
+
+    3. If your gnats server is on the same host as your web server,
+       skip this step.  If not, create 'gnatsweb-site.pl', the site
+       configuration file.  Read gnatsweb.pl, and follow the directions.
+       Basic configuration requires only that you specify the host +
+       port number of your gnats server.
+
+    4. Change line 1 of gnatsweb.pl to point to the location of your
+       'perl' executable.  Perl must be version 5.
+
+    5. Run the tests to make sure the setup is OK.  Specify a
+       username/password/database_name on the command line like so:
+
+           make test USERNAME=anon PASSWORD=pw DATABASE=db_alias
+
+       Before you run this test, you need to set up a file
+       /etc/gnats-db.conf, containing a list of databases on your
+       server, and their alias names.  The GNATS manual is
+       unfortunately not clear about this, but even if you have only a
+       single database on your machine, you need a gnats-db.conf
+       file.  Read appendix C of the Gnats manual, entitled "Multiple
+       Databases on one host" for more information on the format of
+       this file.  Again, the information in appendix C applies even
+       if you have only a single database.
+
+       The db_alias value in the make test command line should be one
+       of the alias names defined in gnats-db.conf.
+
+       Note: no PRs are modified during the tests.  The database alias,
+       username and password must be valid, and the database must contain
+       at least one PR.
+
+       Note: if 'perl' for you is not Perl 5, then 'make PERL=/path/perl5'
+
+       If you don't see the message "All tests passed", investigate.
+
+    6. Install gnatsweb.pl (and gnatsweb-site.pl if you created one)
+       into a CGI-enabled directory on your web server.  For example, on
+       Red Hat Linux with Apache:
+
+           make install CGI_DIR=/home/httpd/cgi-bin
+
+    7. Install the MIME::Base64 package, if you want to use file
+       attachments in your PRs with gnatsweb.  The easiest way to do this
+       is to type (as root if the perl installation is owned by root):
+
+           perl -MCPAN -e 'install MIME::Base64'
+
+
+Known problems and solutions
+============================
+
+    1. Problem: Email is going to the wrong place, e.g. to 'joe' instead
+       of 'joe@my.org'.
+
+       Solution: Fix all the email addresses in
+       $GNATS_ROOT/gnats-adm/responsible.
+
+    2. Problem: Using lynx for Gnatsweb login is broken.
+
+       Solution: No good solution exists at the present time.
+
+    3. Problem: When you use the "Remember this query as" function, the query
+       is stored as a cookie in your web browser. If the query is very complex,
+       the resulting cookie might become larger than the limit imposed by
+       the web server on cookie transfers. The following error will be
+       issued by the web server when you try to access the Gnats database:
+
+       Bad Request
+ 
+       Your browser sent a request that this server could not understand.
+ 
+       Size of a request header field exceeds server limit.
+
+       Solution 1: A quick client-side solution is to delete the offending
+       cookie from the repository of your browser (cookies.txt in Netscape, the
+       cookies directory in the Windows user profile for Internet Explorer).
+
+       Solution 2: A more permanent solution is the server-side one. If you use
+       Apache, recompile and install it with the DEFAULT_LIMIT_REQUEST_FIELDSIZE
+       setting in src/include/httpd.h of the Apache source tree increased from
+       the default value of 8190 to something like 32768.

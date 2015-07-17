@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML> 
+  <HEAD>
+	 <TITLE>Gnatsweb User Guide</TITLE>
+  </HEAD> 
+  <BODY> 
+	 <H1>Gnatsweb User Guide</H1>
+	 <H2>Introduction</H2>
+	 <P>The <I>Gnatsweb</I> interface is a front-end to the <I>Gnats</I> problem
+		tracking system used to create, view and modify Gnats problem reports. Support
+		organizations can use it for tracking of issues related to products that are
+		supported (i.e. software, hardware, documentation, etc.) Problem reports are
+		used to notify <I>responsible</I> parties of problems. When the problems are
+		looked into, the problem reports can be edited and email gets sent to all
+		interested parties.</P>
+	 <P> The Gnatsweb help is divided into the following sections:</P>
+	 <UL>
+		<LI><A HREF="#login">Login Page</A></LI>
+		<LI><A HREF="#main">Main Page</A></LI>
+		<LI><A HREF="#create">Create Problem Report Page</A></LI>
+		<LI><A HREF="#edit">Edit Problem Report Page</A></LI>
+		<LI><A HREF="#view">View Problem Report Page</A></LI>
+		<LI><A HREF="#query">Query Problem Reports Page</A></LI>
+		<LI><A HREF="#advquery">Advanced Query Page</A></LI>
+		<LI><A HREF="#qmatches">Query Results Page</A></LI>
+	 </UL>
+	 <P> For more information about Gnats, see the
+		<A HREF="http://sources.redhat.com/gnats/">Gnats home page</A>. </P><HR>
+	 <H2><A NAME="login">Login Page</A></H2>
+	 <P>The login page is used to login to the Gnats system. The first time
+		Gnatsweb is used, this page is presented. After the first time, the
+		<A HREF="#main">main page</A> is displayed because the settings are stored in
+		cookies on the machine that has the web browser running. There is a button on
+		the <A HREF="#main">main page</A> that takes the user to the Login Page. This
+		button is used to select a new database if desired. There are several controls
+		on the screen: </P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>User Name:</B> (textbox) </DT>
+		  <DD>This is the Gnats user name to login as. </DD>
+		  <DT><B>Password:</B> (textbox)</DT>
+		  <DD>This is the Gnats password for the user name.</DD>
+		  <DT><B>Database:</B> (combobox)</DT>
+		  <DD>This selects the database to login to. The dropdown menu lists all
+			 the available databases.</DD>
+		  <DT><B>Login</B> (button) </DT>
+		  <DD>This logs into the selected Gnats database.</DD>
+		</DL></BLOCKQUOTE>
+	 <P>If the user name and password are correct, the <A HREF="#main">main
+		page</A> will be shown.</P><HR>
+	 <H2><A NAME="main">Main Page</A></H2>
+	 <P>The main page is used to select the various operations within the Gnats
+		database. There are seven operations available from this page:</P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Create Problem Report:</B> (button)</DT>
+		  <DD>This button displays the <A HREF="#create">Create Problem Report
+			 Page</A>. It is used to create a new problem report.</DD>
+		  <DT><B>Edit Problem Report:</B> (button and textbox)</DT>
+		  <DD>This is used to edit an existing problem report. The Problem Report
+			 Number is entered into the text box and either the <KBD>ENTER</KBD> key is
+			 pressed or the Edit button is pressed.</DD>
+		  <DT><B>View Problem Report:</B> (button and textbox)</DT>
+		  <DD>This is used to view an existing problem report. The Problem Report
+			 Number is entered into the text box and either the <KBD>ENTER</KBD> key is
+			 pressed or the Edit button is pressed.</DD>
+		  <DT><B>Query Problem Reports:</B></DT>
+		  <DD>This button displays the <A HREF="#query">Query Problem Reports
+			 Page</A>. Used for querying of existing problem reports.</DD>
+		  <DT><B>Advanced Query:</B>
+		  </DT>
+		  <DD>This button displays the <A HREF="#advquery">Advanced Query
+			 Page</A>. Used for complex querying of existing problem reports.</DD>
+		  <DT><B>Login again:</B></DT>
+		  <DD>This button displays the <A HREF="#login">Login Page</A>. Used for
+			 selecting a different Gnats database.</DD>
+		  <DT><B>Help:</B></DT>
+		  <DD>Displays the Gnatsweb User Guide.</DD>
+		</DL></BLOCKQUOTE> <HR>
+	 <H2><A NAME="create">Create Problem Report Page</A></H2>
+	 <P>The Create Problem Report page is used to create a new problem report.
+		There are many controls on this page. Here is a description of each one: </P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Reporter's email:</B> (textbox)</DT>
+		  <DD>This is the person filing the new problem report. This is necessary
+			 because someone without access to the Gnats database may be the
+			 <I>Originator</I> (described below).</DD>
+		  <DT><B>CC:</B> (textbox)</DT>
+		  <DD>Carbon copy the problem report to this email address. This is
+			 useful for sending a new problem report to interested parties. Future changes
+			 to the problem report are not emailed to this address.</DD>
+		  <DT><B>Others to notify of updates:</B> (textbox)</DT>
+		  <DD>This can be a comma separated list of email addresses that will be
+			 notified when this problem report changes. This is useful for others that may
+			 be interested in this problem.</DD>
+		  <DT><B>Category:</B> (combobox)</DT>
+		  <DD>This combobox allows the selection of a category which the problem
+			 report should be filed under. Category names might for instance correspond to
+			 product names.</DD>
+		  <DT><B>Synopsis:</B> (textbox)</DT>
+		  <DD>This is a short description of a problem. This is used in the
+			 <A HREF="#query">Query Page</A> and the <A HREF="#advquery">Advanced Query
+			 Page</A>.</DD>
+		  <DT><B>Confidential:</B> (combobox)</DT>
+		  <DD>This combobox selects whether or not the problem report is
+			 confidential. This is useful since in-house problem reports don't necessarily
+			 need to be seen by the public.</DD>
+		  <DT><B>Severity:</B> (combobox)</DT>
+		  <DD>This has three options: <I>critical</I>, <I>serious</I>,
+			 <I>non-critical</I>. This is a best guess (i.e. if the hardware catches fire,
+			 it should probably be <I>critical</I>). When creating a problem report, the
+			 severity level is often merely an educated guess. It will often be changed
+			 later on, based on the assessment of the Gnats administrator or the person
+			 responsible for the problem category.</DD>
+		  <DT><B>Priority:</B> (combobox)</DT>
+		  <DD>Like severity, this is merely a guess at the priority level of the
+			 problem.</DD>
+		  <DT><B>Class:</B> (combobox)</DT>
+		  <DD>The class of the problem. This is also a guess.</DD>
+		  <DT><B>Submitter-Id:</B> (combobox)</DT>
+		  <DD>The valid submitter identification. If this is unknown, leave the
+			 default setting. Otherwise select the one desired.</DD>
+		  <DT><B>Originator:</B> (textbox)</DT>
+		  <DD>An email address of the person reporting the problem. This is often
+			 the same as the <I>Reporter's email</I> address. </DD>
+		  <DT><B>Release:</B> (textbox)</DT>
+		  <DD>This should include the installed version of the product which the
+			 problem report applies to, together with identification of applied patches,
+			 updates, fixes etc. Accurate information in this field is often critical for
+			 tracking and diagnosis of the problem.</DD>
+		  <DT><B>Environment:</B> (textbox)</DT>
+		  <DD>A description of the environment where the problem occurred.
+			 Important information might include hardware make and model, operating system
+			 name and version, system patchlevels etc. In general: the more, the
+			 better.</DD>
+		  <DT><B>Description:</B> (multi-line textbox)</DT>
+		  <DD>A full description of the problem. Good descriptions become good
+			 solutions. Bad descriptions make problems hard to solve.</DD>
+		  <DT><B>How-To-Repeat:</B> (multi-line textbox)</DT>
+		  <DD>This is a description of the steps necessary to recreate the
+			 problem.</DD>
+		  <DT><B>Fix:</B> (multi-line textbox)</DT>
+		  <DD>If a workaround or fix has been determined, this is the place to
+			 put that information.</DD>
+		  <DT><B>Submit</B> (button)</DT>
+		  <DD>This submits the problem report to the Gnats database. Email will
+			 be sent to the <I>Reporter's email</I> and <I>Originator's</I> email addresses,
+			 and all other parties listed in the <I>Others to notify</I> field. The Gnats
+			 administrator and the <I>responsible</I> person also gets a copy.</DD>
+		  <DT><B>Reset</B> (button)</DT>
+		  <DD>Reset all fields to defaults. Most the textboxes are cleared and
+			 the comboboxes are set to their defaults.</DD>
+		</DL></BLOCKQUOTE> <HR>
+	 <H2><A NAME="edit">Edit Problem Report Page</A></H2>
+	 <P>The Edit page is used to modify a problem report when a solution or fix
+		has been found, or when any other change to the problem report is required.
+		Many of the fields parallel the <A HREF="#create">Create Problem Report
+		Page</A> (consult that section for a description of the other fields), but
+		others are specific to the edit page.</P>
+	 <P> Some fields have a textbox labeled <I>Reason Changed</I> just below
+		them. If the field above has been modified, the Reason Changed field must be
+		filled in. This is used for tracking the changes to various fields deemed
+		important enough to require an explicit reason for change.</P>
+	 <P> Here are the fields on the edit page that come in addition to those on
+		the Create Problem Report page:</P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Responsible:</B> (combobox)</DT>
+		  <DD>This is the identity of the individual who is responsible for
+			 handling the problem report.</DD>
+		  <DT><B>Reason Changed:</B> (multi-line textbox) below the Responsible
+			 field.</DT>
+		  <DD>If the Responsible field changes, this must be filled in with a
+			 reason for the change.</DD>
+		  <DT><B>State:</B> (combobox)</DT>
+		  <DD>The current state of the problem report. Usually this field is
+			 changed by the Responsible person as the handling of the problem report
+			 progresses.</DD>
+		  <DT><B>Reason Changed:</B> (multi-line textbox) below the State
+			 field.</DT>
+		  <DD>If the State field changes, this must be filled in with a reason
+			 for the change.</DD>
+		  <DT><B>Class:</B> (combobox)</DT>
+		  <DD>The class of the problem report.</DD>
+		  <DT><B>Release-Note:</B> (multi-line textbox)</DT>
+		  <DD>This field is usually used when a problem report has been closed
+			 and incorporated into a new release of a product. The release notes are then
+			 usually collected for use in an update report to be distributed with the
+			 released software.</DD>
+		  <DT><B>Submit Edit</B> (button)</DT>
+		  <DD>This submits the changes to the Gnats database. Another page is
+			 displayed with the results. If fields are missing or incorrectly filled out,
+			 the changes necessary to fix the problem are displayed. By using the 'back'
+			 button in the web browser, the user can go back to the problem report, correct
+			 the errors and resubmit.</DD>
+		  <DT><B>Audit-Trail:</B> (multi-line text display)</DT>
+		  <DD>This is a cumulative description of all the changes made to this
+			 problem report.</DD>
+		</DL></BLOCKQUOTE> <HR>
+	 <H2><A NAME="view">View Problem Report Page</A></H2>
+	 <P>The View page is used to display a Gnats problem report without changing
+		it. It has the same fields described in the <A HREF="#create">Create Problem
+		Report Page</A> and the <A HREF="#edit">Edit Problem Report Page</A>, together
+		with two additional buttons and a link:</P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Edit</B> (button)</DT>
+		  <DD>This displays the edit page.</DD>
+		  <DT><B>View audit-trail</B> (button)</DT>
+		  <DD>Because the Audit-Trail field can get quite long, it is only
+			 displayed when this button is clicked.</DD>
+		  <DT><B>send email to interested parties</B> (link)</DT>
+		  <DD>This is for sending email to the parties interested in this problem
+			 report.</DD>
+		</DL></BLOCKQUOTE> <HR>
+	 <H2><A NAME="query">Query Problem Reports Page</A></H2>
+	 <P>The Query Problem Reports page is for simple searches of the problem
+		report database. It displays the <A HREF="#qmatches">Query Results Page</A>.
+		The fields are "anded" together for the search, meaning that all the criteria
+		selected must match each problem report searched in order for the report to be
+		included in the results. There are several selections that can be made:</P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Submit stored query</B> (button and combobox)</DT>
+		  <DD>Often repeated queries can be stored from the <A
+			 HREF="#qmatches">Query Results Page</A>. This selects a previously stored
+			 query. If no queries have been stored, this field is not displayed.</DD>
+		  <DT><B>Category:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific category to search.</DD>
+		  <DT><B>Severity:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific severity to search.</DD>
+		  <DT><B>Priority:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific priority to search.</DD>
+		  <DT><B>Responsible:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific responsible to
+			 search.</DD>
+		  <DT><B>State:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific state to search.</DD>
+		  <DT><B>Ignore Closed</B> (checkbox)</DT>
+		  <DD>This selects whether or not to ignore closed problem reports
+			 (ignore is on by default).</DD>
+		  <DT><B>Class:</B> (combobox)</DT>
+		  <DD>This will select <I>all</I> or a specific class to search.</DD>
+		  <DT><B>Synopsis Search:</B> (textbox)</DT>
+		  <DD>This will search the synopsis field for the text entered.</DD>
+		  <DT><B>Multi-line Text Search:</B>
+		  </DT>
+		  <DD>This will search all the multi-line text fields for the text
+			 entered.</DD>
+		  <DT><B>Column Display:</B> (multi-select listbox)</DT>
+		  <DD>This selects the columns to be displayed in the query results
+			 table. The selection is stored by the web browser, so the next time a query is
+			 requested, the columns selected for the previous query will be selected by
+			 default.</DD>
+		  <DT><B>Submit query</B> (button)</DT>
+		  <DD>This submits the query and the <A HREF="#qmatches">Query Results
+			 Page</A> is displayed.</DD>
+		</DL></BLOCKQUOTE>
+	 <HR>
+	 <H2><A NAME="advquery">Advanced Query Problem Reports Page</A></H2>
+	 <P>The Advanced Query Problem Reports page is not for the faint of heart.
+		This is a very complicated form with many features. There are three buttons and
+		a combobox to start the search:</P>
+	 <BLOCKQUOTE>
+		<DL>
+		  <DT><B>Submit stored query</B> (button and combobox)</DT>
+		  <DD>Often repeated queries can be stored from the <A
+			 HREF="#qmatches">Query Results Page</A>. This selects a previously stored
+			 query. If no queries have been stored, this field is not displayed.</DD>
+		  <DT><B>Submit query</B> (button)</DT>
+		  <DD>Submit the advanced query, and display the <A
+			 HREF="#qmatches">Query Results Page</A>.</DD>
+		  <DT><B>Reset</B> (button)</DT>
+		  <DD>Reset the form.</DD>
+		</DL></BLOCKQUOTE>
+	 <P>There are four sub-sections to this form:</P>
+	 <OL TYPE="1">
+		<LI>Search All Text</LI>
+		<LI>Search By Date</LI>
+		<LI>Search Individual Fields</LI>
+		<LI>Select Columns to Display</LI>
+	 </OL>
+	 <P>Any one of these sub-sections can be used separately or together for
+		complex searches.</P>
+	 <H3>Search All Text</H3>
+	 <P>There are two types of searches on all text:</P>
+	 <OL TYPE="1">
+		<LI>Single-line text fields</LI>
+		<LI>Multi-line text fields</LI>
+	 </OL>
+	 <P>Regular expressions can be used in searches.</P>
+	 <H3>Search By Date</H3>
+	 <P>The Search By Date sub-section allows you to limit the range of problem
+		reports according to various time parameters. There are six self explanatory
+		fields available:</P>
+	 <OL TYPE="1">
+		<LI>Arrived After</LI>
+		<LI>Arrived Before</LI>
+		<LI>Modified After</LI>
+		<LI>Modified Before</LI>
+		<LI>Closed After</LI>
+		<LI>Closed Before</LI>
+	 </OL>
+	 <P>The dates are entered in a string like: <KBD>1999-04-01 05:00 GMT</KBD>.
+		Though the date matching scheme is pretty robust, it should accept quite a few
+		formats.</P>
+	 <H3>Search Individual Fields</H3>
+	 <P>The Search Individual Fields sub-section is used for matching based on a
+		specific field in the Gnats problem report. All the fields have a textbox for
+		doing regular expression searches. Where applicable, fields have a multi-select
+		listbox that can be used. When nothing is entered for the textbox or selected
+		in the listbox, those fields are not used in the match. Here are the valid
+		matchable fields:</P>
+	 <UL>
+		<LI>Category</LI>
+		<LI>Synopsis</LI>
+		<LI>Confidential</LI>
+		<LI>Severity</LI>
+		<LI>Priority</LI>
+		<LI>Responsible</LI>
+		<LI>State</LI>
+		<LI>Class</LI>
+		<LI>Submitter-Id</LI>
+		<LI>Originator</LI>
+		<LI>Release</LI>
+	 </UL>
+	 <P>Each field is described in the <A HREF="#create">Create Problem Report
+		Page</A> or the <A HREF="#edit">Edit Problem Report Page</A> sections of this
+		user guide. The 'state' field also has an 'Ignore Closed' checkbox to ignore
+		all closed problem reports.</P>
+	 <H3>Select Columns to Display</H3>
+	 <P>This sub-section is a multi-select listbox that is used to set the
+		displayable columns in the <A HREF="#qmatches">Query Results Page</A>.</P><HR>
+	 <H2><A NAME="qmatches">Query Results Page</A></H2>
+	 <P>The problem report table displayed shows the problem report numbers as
+		links to the <A HREF="#view">View Problem Report Page</A>. In order to sort the
+		table by the contents of a specific column, click the column heading.</P>
+	 <P> At the bottom of the page is a text entry field and a button to store a
+		query selection. Stored queries are accessible from the <A HREF="#query">Query
+		Problem Reports Page</A> or the <A HREF="#advquery">Advanced Query Problem
+		Reports Page</A>. This provides for a quick way to repeat often-made searches
+		without having to make all the selections again. </P></BODY>
+</HTML>

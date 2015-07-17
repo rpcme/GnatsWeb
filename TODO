@@ -1,0 +1,31 @@
+Things that would be nice to do...
+
+ser     Pressing Back should never resubmit an edit.
+        Should tell browser not to cache that page.
+        Would demand a rewrite of the Edit page, explicitly saving the
+        form values, and then putting them back when people go back
+        to the Edit page when they have to correct errors that result
+        in a rejected submit.
+
+ser     Implement fixed reports ala wwwgnats/CERN wwwgnats
+
+non     o  The notify list in the Create form is too restrictive. It
+        only allows
+        simple addresses "aaa@bbb.ccc" separated with commas and no spaces.
+
+        I think it should allow the following:
+
+        Rick Macdonald <rickm@vsl.com>, "Kenneth H. Cox"
+        <kenstir@senteinc.com>
+
+non     Automatically fix shebang #! line using Makefile.PL and
+        $(INSTALLBIN)
+
+non     Some new PR field values should be sticky via cookie, e.g.
+        Category, Release.
+        Workaround easy: use Back button between sending reports.
+
+# local variables:
+# mode:auto-fill
+# fill-prefix:"        "
+# end:
