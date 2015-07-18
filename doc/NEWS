@@ -1,0 +1,72 @@
+July 29, 2003           Gnatsweb 4.00
+
+This is the final release of Gnatsweb 4.00.  This release has its
+roots in Gnatsweb 2.x, but has been almost completely rewritten to
+support GNATS 4.0.  Visually, it is similar to the later Gnatsweb 2.x
+releases, but almost everything has changed under the hood.  We do not
+list all the changes from 2.x here -- suffice it to say that virtually
+every feature of GNATS 4.0 is supported.  For reference as to what
+changed during the 4.0 beta series, we include the contents of the
+former BETA file below.
+
+The most inportant changes from beta 4:
+- The value of the Submitter-Id field is now made persistent by using
+the value for this field that is stored in the global cookie when
+setting up the Create PR page.
+- Fixed a bug where Audit-Trail entries were being added even though
+no audited fields had changed.  This had to do with whitespace being
+added to certain fields on edits.
+- mailto:-URLs should work a tad better in the Opera web
+browser/e-mail client.
+
+
+November 23, 2002           Gnatsweb 3.99.4 (4.0 beta 4)
+
+Almost a year since the last beta.  We are still waiting for GNATS 4.0
+to be released before we release the final Gnatsweb 4.  This beta is
+deemed to be of release quality.  It is intended to go with GNATS 4.0
+beta 2 and will not work properly with older GNATS 4 versions.
+
+It is likely to be very similar to the one we eventually release with
+GNATS 4.0.
+
+Major externally visible changes:
+- We now use exact matching when queries are made on enum or multienum
+fields.
+- X-GNATS-Notify is gone from Gnatsweb since it is not supported by
+gnatsd.
+- It is now possible to specify which columns to sort by in the Query
+and Advanced Query pages.  It is also possible to specify reverse sort
+order both on the query pages and after results are displayed.
+- Both query pages have been tidied up a bit.
+- The `Category' field in the Create page is now set to `unknown' by
+default, in order to force users to select something meaningful.
+- When entries are removed from administrative files, such as the
+responsible file, Gnatsweb handles this by displaying `unknown' if it
+finds a field value that is no longer valid.  Gnatsweb now displays an
+error if a changed PR is submitted with the Responsible, Category or
+Submitter-Id set to `unknown'.
+- We support the recently introduced GNATS dbconfig setting
+"inital-entry require" which specifies that a certain field must be
+nonempty on PR submission.  Such fields are now by default marked with
+the field title in red.  A config variable is provided to set the
+marking color.
+
+
+December 12, 2001           Gnatsweb 3.99.3 (4.0 beta 3)
+
+This is the third beta of Gnatsweb 4.  Lots of changes and updates.  A
+major new feature: MultiEnum support, has been added.  Best Gnatsweb
+ever.
+
+
+October 17, 2001           Gnatsweb 3.99.2 (4.0 beta 2)
+
+This is the second beta of Gnatsweb 4.  Some bugs undoubtedly remain,
+but this is in general a solid and usable release.
+
+This version has one major limitation -- it does not support GNATS 4
+MultiEnum fields.  This should not be a serious problem for most
+sites, since no fields in the default GNATS 4 configuration are of
+this type.  Support for MultiEnum fields is coming in the next beta.
+
