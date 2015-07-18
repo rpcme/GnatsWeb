@@ -1,9 +1,28 @@
 #!/usr/bin/perl
 #
-# gnats-test.pl -
-#      Test code for gnats-lib.pl
+# test.pl -
+#      Test code for GNU Gnatsweb
 #
-# $Id: test.pl,v 1.1.1.1.2.4 2001/07/01 17:46:36 yngves Exp $
+# Copyright 1998, 1999, 2001, 2003
+# - The Free Software Foundation Inc.
+#
+# GNU Gnatsweb is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# GNU Gnatsweb is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Gnatsweb; see the file COPYING. If not, write to the Free
+# Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+#
+# $Id: test.pl,v 1.8.2.1 2003/07/29 12:24:22 yngves Exp $
+#
 
 #-----------------------------------------------------------------------------
 # test harness setup
@@ -44,6 +63,21 @@ sub sum {
     else {
         $errors++;
         print "FAIL\n";
+        if ($test eq 'connect')
+        {
+            print <<EOF;
+
+Gnatsweb was unable to connect to the GNATS server.
+
+There are several possible reasons for this.  Start off by checking
+that the USERNAME, PASSWORD and DATABASE parameters you supplied are
+valid.  If they are, there may be a problem in the configuration of
+your GNATS server.  Check your GNATS installation, particularly the
+host access files (remember that the web server needs access to the
+GNATS server), then run the tests again.
+
+EOF
+        }
     }
 }
 
@@ -60,76 +94,23 @@ END {
 # connect -
 #
 #     Connect to gnatsd and initialize.
-
 $test = 'connect';
+local $SIG{__WARN__} = END;
+local $SIG{__DIE__} = END;
+open(STDERR, "/dev/null");
 initialize('regression_testing');
 sum($test, $access_level);
-
 # can't do anything if this test fails
 exit $errors if $errors;
-
 #-----------------------------------------------------------------------------
 # query -
 #
 #     Simple query.  Results used for parsepr/unparsepr test
 
 $test = 'query';
-@query_results = client_cmd("sql2");
+client_cmd("qfmt sql2");
+@query_results = client_cmd("quer");
 sum($test, $#query_results + 1);
-
-#-----------------------------------------------------------------------------
-# parse_pr, unparse_pr -
-#
-#     loop over first PRs found (max 50) and make sure
-#     that parsing and then unparsing them does not change the PR.
-
-# trim @query_results to be PR numbers only
-map { $_ = (split/\|/, $_)[0] } @query_results;
-
-# sort it by PR number
-@query_results = sort { $a <=> $b } @query_results;
-
-# trim it to 50 PR's max
-#if ($ENV{'LOGNAME'} ne 'kenstir') {
-    splice(@query_results, 49);
-#} else {
-#    # kenstir-special test.
-#    #splice(@query_results, 49);
-#    #@query_results = (42,43,44);
-#}
-
-foreach my $mypr (@query_results) {
-    $test = "parsepr/unparsepr $mypr";
-    print LOG "test: $test\n";
-    my %fields = readpr($mypr);
-    my $reconstructed_pr = unparsepr('test', %fields);
-    my @pr_lines = client_cmd("full $mypr");
-    my $orig_pr = join("\n", @pr_lines);
-    my $ok = 1;
-    if ($orig_pr ne $reconstructed_pr) {
-        # print PRs into two files and use diff for ease of debugging
-        my $origfile = POSIX::tmpnam();
-        open(ORIG, ">$origfile") || die;
-        print ORIG $orig_pr;
-        close(ORIG) || die;
-
-        my $newfile = POSIX::tmpnam();
-        open(NEW, ">$newfile") || die;
-        print NEW $reconstructed_pr;
-        close(NEW) || die;
-
-        # 12/18/99: Not everyone has gnu diff; don't use -u by default.
-        #my $cmd = "diff -u $origfile $newfile";
-        my $cmd = "diff $origfile $newfile";
-        my $result = `$cmd`;
-        if ($?) {
-            print LOG "-"x50, " pr: $mypr\n$cmd\n", $result;
-            $ok = 0;
-        }
-        #unlink($origfile, $newfile);
-    }
-    sum($test, $ok);
-}
 
 #-----------------------------------------------------------------------------
 # address parsing -

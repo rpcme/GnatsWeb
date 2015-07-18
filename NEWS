@@ -1,102 +1,72 @@
-Current Version: 2.9.3
-See the file ChangeLog for the details of all changes.
+July 29, 2003           Gnatsweb 4.00
 
-Changes from 2.9.2 to 2.9.3
-* We now display indented material in multiline fields, such as code
-  samples etc., with the indentation intact.
-* We now include a Reply-To header in change notification emails, set
-  up in such a way that followups to change notification e-mails are also
-  sent to GNATS itself.
-* After successful PR submission, the user is now redirected to the
-  page the user was at when "Create" was clicked.
-* Support queries on Submitter-ID from the standard query page.
-* The redirect after stored query deletion now works in Netscape.
-* The "send mail to interested parties" link now includes the PR
-  synopsis as well as category and PR number in the Subject field of
-  the generated message.
+This is the final release of Gnatsweb 4.00.  This release has its
+roots in Gnatsweb 2.x, but has been almost completely rewritten to
+support GNATS 4.0.  Visually, it is similar to the later Gnatsweb 2.x
+releases, but almost everything has changed under the hood.  We do not
+list all the changes from 2.x here -- suffice it to say that virtually
+every feature of GNATS 4.0 is supported.  For reference as to what
+changed during the 4.0 beta series, we include the contents of the
+former BETA file below.
 
-Changes from 2.9.1 to 2.9.2
-* Workaround for an age-old stupid, stupid, stupid Netscape bug, in
-  which the back arrow is broken after submitting a new PR or an
-  edited PR.
-* Use the $include_audit_trail variable to choose view command for the
-  PR number links in query results.  This was mistakenly left out in
-  2.9.1.
-* Documentation polished.
+The most inportant changes from beta 4:
+- The value of the Submitter-Id field is now made persistent by using
+the value for this field that is stored in the global cookie when
+setting up the Create PR page.
+- Fixed a bug where Audit-Trail entries were being added even though
+no audited fields had changed.  This had to do with whitespace being
+added to certain fields on edits.
+- mailto:-URLs should work a tad better in the Opera web
+browser/e-mail client.
 
-Changes from 2.9.0 to 2.9.1
-* Documentation corrected and significantly expanded.  We now provide
-  a TROUBLESHOOTING document as well.
-* Bug fix. E-mail address extraction for the "send email to interested
-  parties" is now more robust.
-* Bug fix. Handle browsers without Javascript support better.
-* Bug fix. Minor problems with browsers such as Konqueror should be
-  gone.
-* Minor new feature: We now use both the category name and description
-  and the responsible name and full name in dialogs on the create,
-  edit and query pages.
-* Minor new feature: Whether the Audit Trail is visible by default in
-  the View PR screen is now configurable.
-* Minor new feature: There is now a checkbox in the query pages which
-  provides for displaying the current date on the query results page.
 
-Changes from 2.8.2 to 2.9.0
-* Usability enhancement. There is now a navigation bar on top of all
-  pages with links to all major Gnatsweb functions.
-* Bug fix. Properly handle a locked GNATS database. This used to make
-  Gnatsweb bomb out when submitting edits and leave the PR locked.
-* Minor bug fixes related to attachments.
-* Add X-Mailer header to outgoing mail.
-* Bug fix. Text attachments are no longer truncated at the first blank
-  line.
+November 23, 2002           Gnatsweb 3.99.4 (4.0 beta 4)
 
-Changes from 2.8.1 to 2.8.2
-* Fixed serious security hole allowing a attacker to read files and
-  execute commands remotely on the gnatsweb server. See ChangeLog for
-  the full monty.
+Almost a year since the last beta.  We are still waiting for GNATS 4.0
+to be released before we release the final Gnatsweb 4.  This beta is
+deemed to be of release quality.  It is intended to go with GNATS 4.0
+beta 2 and will not work properly with older GNATS 4 versions.
 
-Changes from 2.8.0 to 2.8.1
-* Redirect after submitting edits wasn't working on systems with a
-  new CGI.pm. This has been fixed.
-* We now let people search for PRs with category 'pending'.
-* We no longer by default require JavaScript for the main menu to
-  work.
-* The INSTALL file now makes it abundantly clear that you need a
-  gnats-db.conf file even if you have only a single database.
+It is likely to be very similar to the one we eventually release with
+GNATS 4.0.
 
-Changes from 2.7 beta to 2.8.0
-* Both the Gnats and Gnatsweb version numbers are now displayed in the
-  main page footer.
-* If a user pressed the 'Stop' button of the browser right after
-  pressing 'Submit' on the Edit PR page, the PR would not be properly
-  unlocked. This has been fixed in a hopefully watertight way.
-* If edits were submitted to a locked PR, Gnatsweb would not catch the
-  error, and instead display a confusing error message saying that the
-  PR had been modified since you started editing it. Gnatsweb now
-  properly warns of a locked PR and stops the submission.
-* Documentation updates to avert problems when people install Gnatsweb
-  on top of a multiple-database Gnats.
-* The page banner is now a little smaller, and the text "gnatsweb" is
-  now displayed in a smaller typeface.
-* On the Advanced Query Page, we now display a line below 'Closed
-  After' and 'Closed Before' reminding users to uncheck 'Ignore
-  Closed'.
-* A bug where users would be able to create new PRs with PR numbers
-  composed both out of letters and numbers has been corrected.
-* When a non-existing PR number was typed into the 'view' or 'edit'
-  textboxes on the front page, no error message would be given, and
-  the user would be presented with a blank PR. Checks have been added
-  to prevent this.
-* Internet Explorer users are now being properly redirected to the
-  Gnatsweb main page after submitting an edit.
-* Internet Explorer would try to give downloaded attachments the same
-  name as the gnatsweb script file itself. This has been fixed.
-* Editing PRs with attachments caused Gnatsweb 2.7 beta to crash. This
-  has been fixed.
-* URLs in PR text are now being automatically converted to clickable
-  links when PRs are displayed.
-* Fixed a bug where HTML tags in PR fields weren't being properly
-  escaped before being displayed in the query results.
-* It is now possible to link an external stylesheet to all Gnatsweb
-  pages. The Gnatsweb-generated HTML has been thoroughly cleaned up in
-  order to support stylesheets better.
+Major externally visible changes:
+- We now use exact matching when queries are made on enum or multienum
+fields.
+- X-GNATS-Notify is gone from Gnatsweb since it is not supported by
+gnatsd.
+- It is now possible to specify which columns to sort by in the Query
+and Advanced Query pages.  It is also possible to specify reverse sort
+order both on the query pages and after results are displayed.
+- Both query pages have been tidied up a bit.
+- The `Category' field in the Create page is now set to `unknown' by
+default, in order to force users to select something meaningful.
+- When entries are removed from administrative files, such as the
+responsible file, Gnatsweb handles this by displaying `unknown' if it
+finds a field value that is no longer valid.  Gnatsweb now displays an
+error if a changed PR is submitted with the Responsible, Category or
+Submitter-Id set to `unknown'.
+- We support the recently introduced GNATS dbconfig setting
+"inital-entry require" which specifies that a certain field must be
+nonempty on PR submission.  Such fields are now by default marked with
+the field title in red.  A config variable is provided to set the
+marking color.
+
+
+December 12, 2001           Gnatsweb 3.99.3 (4.0 beta 3)
+
+This is the third beta of Gnatsweb 4.  Lots of changes and updates.  A
+major new feature: MultiEnum support, has been added.  Best Gnatsweb
+ever.
+
+
+October 17, 2001           Gnatsweb 3.99.2 (4.0 beta 2)
+
+This is the second beta of Gnatsweb 4.  Some bugs undoubtedly remain,
+but this is in general a solid and usable release.
+
+This version has one major limitation -- it does not support GNATS 4
+MultiEnum fields.  This should not be a serious problem for most
+sites, since no fields in the default GNATS 4 configuration are of
+this type.  Support for MultiEnum fields is coming in the next beta.
+

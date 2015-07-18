@@ -1,116 +1,135 @@
 
-                   Gnatsweb - web front-end to GNATS
+                               Gnatsweb
+                        Web interface to GNATS
+               The GNU Problem Report Management System
 
-                           Installation Guide
+                  Installation Guide for Gnatsweb 4
 
 
-Steps to install Gnatsweb on your web server
-============================================
+Quick start for the impatient
+=============================
 
-    1. Make sure you have a working GNATS installation with a
-       non-empty database before installing Gnatsweb.
+1. The following procedure assumes that you have a working
+   installation of GNATS version 4.  If not, refer to the installation
+   instructions in Chapter 3, `Installing GNATS' of the GNATS manual.
 
-    2. Configure GNATS to allow host access to your web server.  Here
-       are two different ways to accomplish this:
+   PLEASE NOTE: Gnatsweb 4 does not work with GNATS 3.x servers.  It
+   only supports GNATS 4.0 or newer.
 
-       a. Grant 'edit' access to the web server in the
-          gnats-adm/gnatsd.conf file, thus giving everyone with access
-          to the web server edit access to your GNATS database.
-          Gnatsweb will still prompt for a username/password; this
-          username will be used for the Audit-Trail, but you don't need
-          to put the username into the gnats-adm/gnatsd.access file.
+   If you are upgrading from an old Gnatsweb 4 installation, see the
+   notice about upgrading under item 6 below.
 
-          If you are running the web server on the same machine as
-          GNATS is running on, the following entry in gnatsd.conf will
-          give edit access:
+   If you are migrating to GNATS 4 from GNATS 3.x and are upgrading
+   from an old Gnatsweb 2.x installation, you should back up and
+   remove the Gnatsweb files in your cgi-bin directory before
+   proceeding.
 
-            localhost:edit:
+2. Since Gnatsweb runs on your web server, you need to grant the web
+   server access to the GNATS database.  Here are two different ways
+   to accomplish this:
 
-       b. Grant restricted access only (such as 'view' or 'none') to the
-          web server in the gnats-adm/gnatsd.conf file.  Grant higher
-          access to individual users by adding username/password entries
-          in the gnats-adm/gnatsd.access file.
+   a. Grant 'edit' access to the web server in the gnatsd.host_access
+      file.  This file is located in /usr/local/etc/gnats by default,
+      but this may have been overridden when GNATS was installed.
+      Typically, the web server is running on the same machine as the
+      GNATS server, so that the following line needs to be added to
+      gnatsd.host_access:
 
-          NOTE: If you have multiple databases in your GNATS setup,
-          Gnatsweb will not work properly if you set access for the
-          web server to 'none', because this will prevent Gnatsweb
-          from obtaining a list of what databases are actually
-          available on the server. In this case, you must set access
-          to 'view' or higher.  This is a deficiency which will
-          hopefully be adressed in coming versions of GNATS.
+        localhost:edit:
 
-          If you are running the web server on the same machine as
-          GNATS is running on, one of the following entries in
-          gnatsd.conf will give the required access:
+      Do note that this disables all security -- anyone with access to
+      the Gnatsweb script on the web server gets edit access to your
+      GNATS databases.  Gnatsweb will still prompt for a username at
+      login, but this username will only be used for generating
+      Audit-Trail entries to track PR edits.  This means that you
+      don't need to maintain a GNATS user database since any login
+      name is accepted.
 
-            localhost:view:
+   b. Grant restricted access only to the web server in the
+      gnatsd.host_access file.  Grant higher access to individual
+      users by adding username/password entries in the
+      gnats-adm/gnatsd.access file or the global gnatsd.access file by
+      default located in /usr/local/etc/gnats.  The web server must
+      have at least 'listdb' access.  If the web server is running on
+      the same machine as the GNATS server, the following line needs
+      to be added to gnatsd.host_access:
 
-          or
+        localhost:listdb:
 
-            localhost:none:
+      If you want more restrictions than provided by those solutions,
+      consider restricting access to your web server, or the
+      particular CGI directory where you plan to install gnatsweb.
 
-       If you want more restrictions than provided by those solutions,
-       consider restricting access to your web server, or the particular
-       CGI directory where you plan to install Gnatsweb.
+      For more information about GNATS access control, see Appendix C,
+      `Controlling access to databases' of the GNATS 4 manual.
 
-    3. If your GNATS server is on the same host as your web server,
-       skip this step.  If not, create 'gnatsweb-site.pl', the site
-       configuration file.  Read gnatsweb.pl, and follow the directions.
-       Basic configuration requires only that you specify the host +
-       port number of your GNATS server.
+3. If your GNATS server is on the same host as your web server, skip
+   this step for now.  If not, edit 'gnatsweb-site.pl', the site
+   configuration file.  You need to set the variables $site_gnats_host
+   and $site_gnats_port to point to your GNATS server.
 
-    4. In order for Gnatsweb to work properly, you need to install two
-       Perl modules on your system.  Some systems may already have
-       them installed, but the following procedure ensures that you
-       have the correct versions of them on your system:
+   Default installations of GNATS run on port 1529, so if you have a
+   default GNATS installation running on the host `gnats.example.com',
+   you would set $site_gnats_host to 'gnats.example.com' and
+   $site_gnats_port to '1529'.
 
-       CGI.pm v2.56 or newer (the unofficial version 3.x of CGI.pm
-       will not work): Gnatsweb will not work at all without this
-       module.  On most systems, the following command (run as root)
-       installs the correct version:
+4. In order for Gnatsweb to work properly, you need to install two
+   Perl modules on your system.  Some systems may already have them
+   installed, but the following procedure ensures that you have the
+   correct versions of them on your system:
 
-       perl -MCPAN -e 'install CGI'
+   CGI.pm v2.56 or newer (the unofficial version 3.x of CGI.pm will
+   not work): Gnatsweb will not work at all without this module.  On
+   most systems, the following command (run as root) installs the
+   correct version:
 
-       MIME::BASE64 (Gnatsweb will run without it, but attachment
-       handling will be disabled).  Most systems get the right version
-       when the following command is run (as root):
+     perl -MCPAN -e 'install CGI'
 
-       perl -MCPAN -e 'install MIME::Base64'
+   MIME::BASE64 (Gnatsweb will run without it, but attachment handling
+   will be disabled).  Most systems get the right version when the
+   following command is run (as root):
 
-    5. Change line 1 of gnatsweb.pl to point to the location of your
-       'perl' executable.  Perl must be version 5.
+     perl -MCPAN -e 'install MIME::Base64'
 
-    6. Run the tests to make sure the setup is OK.  Specify a
-       username/password/database_name on the command line like so:
+5. Change line 1 of gnatsweb.pl to point to the location of your
+   'perl' executable.  Perl must be version 5.
 
-           make test USERNAME=anon PASSWORD=pw DATABASE=dbalias
+6. Run the tests to make sure the setup is OK.  Specify a
+   username/password/database_name on the command line like so:
 
-       Before you run this test, you need to set up a file
-       /etc/gnats-db.conf, containing a list of databases on your
-       server, and their alias names.  The GNATS manual is
-       unfortunately not clear about this, but even if you have only a
-       single database on your machine, you need a gnats-db.conf file.
-       Read appendix C of the GNATS manual, entitled "Multiple
-       Databases on one host" for more information on the format of
-       this file.  Again, the information in appendix C applies even
-       if you have only a single database.
+     make test USERNAME=user PASSWORD=password DATABASE=database
 
-       The dbalias value in the make test command line should be one
-       of the alias names defined in gnats-db.conf.
+   where 'user' is the name of a user defined in your GNATS server's
+   gnatsd.access files, 'password' is the user's password and
+   'database' is the name of one of the databases on your server.
 
-       Note: no PRs are modified during the tests.  The database alias,
-       username and password must be valid, and the database must contain
-       at least one PR.
+   If you don't see the message "All tests passed", investigate.  The
+   TROUBLESHOOTING document distributed with Gnatsweb contains some
+   useful advice.  See also the end of this document.
 
-       If you don't see the message "All tests passed", investigate.
-       The TROUBLESHOOTING document distributed with Gnatsweb contains
-       some useful advice.  See also the end of this document.
+7. Install gnatsweb.pl and gnatsweb-site.pl into a CGI-enabled
+   directory on your web server.  For a typical Apache web server
+   installation:
 
-    7. Install gnatsweb.pl (and gnatsweb-site.pl if you created one)
-       into a CGI-enabled directory on your web server.  For a typical
-       Apache web server installation:
+     make install CGI_DIR=/usr/local/apache/cgi-bin
 
-         make install CGI_DIR=/usr/local/apache/cgi-bin
+   NOTICE TO UPGRADERS:
+
+   If your cgi-bin directory already contains the files gnatsweb.pl
+   and gnatsweb.html, these will be renamed to gnatsweb.pl.old and
+   gnatsweb-site.html.old before the new files are installed.  If you
+   already have a gnatsweb-site.pl file, this file will not be touched
+   during installation.  However, you should compare the
+   gnatsweb-site.pl in the distribution with the currently installed
+   file and make sure that there isn't any new stuff which you need to
+   copy into your installed configuration.
+
+
+How to proceed
+==============
+
+You should now have a basic, working Gnatsweb installation.  To tailor
+it further to your site's needs, go on to read the CUSTOMIZE document.
 
 
 What to do if you have problems
