@@ -1,0 +1,655 @@
+=head1 INSTALLATION
+
+=head2 QUICK START
+
+The following sections will gently but expediently get you started with
+Gnatsweb.
+
+=over
+
+=item 1. Assumptions
+
+The following procedure assumes that you have a working
+installation of GNATS version 4.  If not, refer to the installation
+instructions in Chapter 3, `Installing GNATS' of the GNATS manual.
+
+B<PLEASE NOTE>: Gnatsweb 4 does not work with GNATS 3.x servers.  It
+only supports GNATS 4.0 or newer.
+
+If you are upgrading from an old Gnatsweb 4 installation, see the
+notice about upgrading under item 6 below.
+
+If you are migrating to GNATS 4 from GNATS 3.x and are upgrading
+from an old Gnatsweb 2.x installation, you should back up and
+remove the Gnatsweb files in your cgi-bin directory before
+proceeding.
+
+=item 2. Preparing GNATS
+
+Since Gnatsweb runs on your web server, you need to grant the web
+server access to the GNATS database.  Here are two different ways
+to accomplish this:
+
+   a. Grant 'edit' access to the web server in the gnatsd.host_access
+      file.  This file is located in /usr/local/etc/gnats by default,
+      but this may have been overridden when GNATS was installed.
+      Typically, the web server is running on the same machine as the
+      GNATS server, so that the following line needs to be added to
+      gnatsd.host_access:
+
+        localhost:edit:
+
+      Do note that this disables all security -- anyone with access to
+      the Gnatsweb script on the web server gets edit access to your
+      GNATS databases.  Gnatsweb will still prompt for a username at
+      login, but this username will only be used for generating
+      Audit-Trail entries to track PR edits.  This means that you
+      don't need to maintain a GNATS user database since any login
+      name is accepted.
+
+   b. Grant restricted access only to the web server in the
+      gnatsd.host_access file.  Grant higher access to individual
+      users by adding username/password entries in the
+      gnats-adm/gnatsd.access file or the global gnatsd.access file by
+      default located in /usr/local/etc/gnats.  The web server must
+      have at least 'listdb' access.  If the web server is running on
+      the same machine as the GNATS server, the following line needs
+      to be added to gnatsd.host_access:
+
+        localhost:listdb:
+
+      If you want more restrictions than provided by those solutions,
+      consider restricting access to your web server, or the
+      particular CGI directory where you plan to install gnatsweb.
+
+      For more information about GNATS access control, see Appendix C,
+      `Controlling access to databases' of the GNATS 4 manual.
+
+=item 3. GNATS and Gnatsweb Coexistence
+
+If your GNATS server is on the same host as your web server, skip
+this step for now.  If not, edit 'gnatsweb-site.pl', the site
+configuration file.  You need to set the variables $site_gnats_host
+and $site_gnats_port to point to your GNATS server.
+
+Default installations of GNATS run on port 1529, so if you have a
+default GNATS installation running on the host `gnats.example.com',
+you would set $site_gnats_host to 'gnats.example.com' and
+$site_gnats_port to '1529'.
+
+=item 4. Install Dependencies
+
+In order for Gnatsweb to work properly, you need to install two
+Perl modules on your system.  Some systems may already have them
+installed, but the following procedure ensures that you have the
+correct versions of them on your system:
+
+CGI.pm v2.56 or newer (the unofficial version 3.x of CGI.pm will
+not work): Gnatsweb will not work at all without this module.  On
+most systems, the following command (run as root) installs the
+correct version:
+
+   perl -MCPAN -e 'install CGI'
+
+MIME::BASE64 (Gnatsweb will run without it, but attachment handling
+will be disabled).  Most systems get the right version when the
+following command is run (as root):
+
+  perl -MCPAN -e 'install MIME::Base64'
+
+=item 5. Modify Gnatsweb for the Perl executable
+
+Change line 1 of gnatsweb.pl to point to the location of your
+   'perl' executable.  Perl must be version 5.
+
+=item 6. Testing the Setup
+
+Run the tests to make sure the setup is OK.  Specify a
+username/password/database_name on the command line like so:
+
+   make test USERNAME=user PASSWORD=password DATABASE=database
+
+where 'user' is the name of a user defined in your GNATS server's
+gnatsd.access files, 'password' is the user's password and
+'database' is the name of one of the databases on your server.
+
+If you don't see the message "All tests passed", investigate.  The
+TROUBLESHOOTING document distributed with Gnatsweb contains some
+useful advice.  See also the end of this document.
+
+=item 7. Installing To Apache
+
+Install gnatsweb.pl and gnatsweb-site.pl into a CGI-enabled
+directory on your web server.  For a typical Apache web server
+installation:
+
+   make install CGI_DIR=/usr/local/apache/cgi-bin
+
+B<NOTICE TO UPGRADERS:>
+
+If your cgi-bin directory already contains the files gnatsweb.pl
+and gnatsweb.html, these will be renamed to gnatsweb.pl.old and
+gnatsweb-site.html.old before the new files are installed.  If you
+already have a gnatsweb-site.pl file, this file will not be touched
+during installation.  However, you should compare the
+gnatsweb-site.pl in the distribution with the currently installed
+file and make sure that there isn't any new stuff which you need to
+copy into your installed configuration.
+
+=back
+
+You should now have a basic, working Gnatsweb installation.  To tailor
+it further to your site's needs, go on to read the CUSTOMIZE section.
+
+What to do if you have problems:
+
+=over
+
+=item * Go through the TROUBLESHOOTING section.
+
+=item * Try sifting through the GNATS-related mailing list archives at
+  http://savannah.gnu.org/mail/?group_id=65
+
+=item * If you still have problems, try posting to the help-gnats mailing
+  list.  Subscribe from http://savannah.gnu.org/mail/?group_id=65
+  Please avoid posting until you are completely certain that there is
+  nothing relevant in the mailinglist archives.
+
+=back
+
+=head1 CUSTOMIZE
+
+
+Gnatsweb was designed with customization in mind. It provides two
+primary mechanisms for this:
+
+=over
+
+=item * Configuration variables
+
+=item * Callback hooks in the code
+
+=back
+
+Both methods involve editing the gnatsweb-site.pl file which was
+installed together with the main gnatsweb.pl script.  Indeed, all
+changes or additions you make to Gnatsweb should be put into this
+file, since that will make maintenance and upgrading to future
+versions of Gnatsweb much easier.
+
+The use of Gnatsweb configuration variables is described in the file
+CUSTOMIZE.vars, and callback hooks are documented in CUSTOMIZE.cb.
+
+=head2 CONFIGURATION VARIABLES
+
+Gnatsweb ships with a sensible default setup.  Nevertheless, many
+sites will wish to modify cosmetics such as background color, shape
+and size of fonts, and some sites may wish to change the way Gnatsweb
+handles logins and cookies.  These characteristics and more are easily
+modified by redefining the values of certain variables used in the
+gnatsweb.pl script.
+
+The different configuration variables are treated in detail below.  In
+order to override the default value of a variable, set its value in
+the gnatsweb-site.pl file which was installed together with
+gnatsweb.pl in the cgi-bin directory of your web server.  This file
+already contains two settings, one for the name of the GNATS host and
+one for the port number on which the GNATS server is running.  You may
+already have modified these values as part of the initial installation
+of Gnatsweb.  We strongly suggest that you use this approach, and that
+you do not modify the gnatsweb.pl file directly, since that will make
+future upgrades much more difficult.
+
+The following variables may be used to modify the look and behaviour
+of Gnatsweb. The default values are also listed and explained:
+
+ $site_gnats_host = 'localhost';
+ $site_gnats_port = 1529;
+
+These define the host name of the GNATS server and the TCP port the
+server listens on.  The default values are for a GNATS server which
+runs on the same host as the web server and which uses the default
+GNATS port number.  This port number may have been modified during
+initial installation of GNATS.
+
+ $site_gnatsweb_server_auth = 0;
+
+When set to '1', this variable specifies that the web server itself
+handles access authentication to Gnatsweb.  In order to set up a more
+secure installation of Gnatsweb, you can have the web server do the
+authentication against an htpasswd file, an LDAP server or some other
+system supported by the web server.  Combining this with a secure
+connection over SSL provides a reasonably high-security interface to
+GNATS.
+
+Once the user is authenticated in this fashion, the Gnatsweb
+script will use the username supplied from the web server.  For this
+to work, GNATS needs to be set up to grant edit access to the web
+server.  For more information on what this entails, see the Gnatsweb
+INSTALL file and Appendix C, `Controlling access to databases' of the
+GNATS 4 manual.
+
+ $site_no_gnats_passwords = 0;
+
+The GNATS network mode is quite cavalier about passwords, so some
+sites may elect not to use GNATS passwords and instead let users
+identify themselves by simply supplying a username.  In such
+environments, there is little point in Gnatsweb asking for passwords,
+and if this variable is set Gnatsweb will not prompt for a password on
+the login page.
+
+This essentially means that anyone can pretend to be anyone, but since
+the GNATS command line tools are hardly more secure, this is
+relatively unimportant at sites that use these tools.
+
+ $no_create_without_access = '';
+
+This variable defines the minimum access level a user must have in
+order to have access to the Create PR function in Gnatsweb.  Since
+GNATS by default allows anyone to submit PRs this is only likely to be
+meaningful at sites where Gnatsweb is the only interface to GNATS.
+
+When this variable is set to an empty value, anyone is allowed access
+to the Create function.  If this feature is to be used, a typical
+value would be 'edit'.  See the GNATS gnatsd.access files and Appendix
+C, `Controlling access to databases' of the GNATS 4 manual for details
+on the meaning of the different access levels.
+
+ $site_mail_domain = '@yourdomain.here';
+
+This sets the default mail domain for the Responsible field
+-- if this field contains a bare user-id, the value of this variable
+will be tagged on at the end to generate a clickable mailto link on
+the View PR screen.  The value must begin with an '@' sign.
+
+
+ %site_pr_submission_address = ();
+
+This hash should contain the e-mail addresses that your site uses for
+submission of PRs.  If it is defined for a given database, the Edit
+and View pages will include a mailto link marked "submit a followup by
+email" pointing to the defined address for this database and to the
+address contained in the Reply-To field of the PR.
+
+The format for this hash is
+
+ %site_pr_submission_address = ('database'  => 'address');
+
+For example, if you have one database named `default' with submission
+address 'support@example.com' and one named `helpdesk' with submission
+address 'helpdesk@example.com', you could define the hash as follows:
+
+ %site_pr_submission_address = ('default'  => 'support@example.com',
+                                'helpdesk' => 'helpdesk@example.com');
+
+
+ $site_post_max = 1024 * 1024;
+
+The maximum size posting which Gnatsweb will accept (in bytes).  It is
+conceivable that someone with malicious intent might try to jam your
+server by for instance posting an enormous attachment.  This variable
+limits the size of such postings.  The default value of 1 megabyte
+should be fairly sensible, but sites may want to implement different
+policies here.
+
+
+ $description_in_view = 0;
+
+When set to '1', field descriptions will be shown on the View PR page.
+This tends to look messy, so by default descriptions are only shown on
+the Edit and Create PR pages.
+
+ $help_page_path = './gnatsweb.html';
+
+The path to the Gnatsweb help page.  This is the file that will be
+returned when the user clicks on the Help button.  The path is
+relative to the directory where gnatsweb.pl is located.
+
+ $site_banner_text = 'GNU Gnatsweb';
+ $site_banner_background = '#000000';
+ $site_banner_foreground = '#ffffff';
+ $site_button_background = '#000000';
+ $site_button_foreground = '#ffffff';
+
+These variables control the name that will be shown in the banner on
+top of each page in addition to the database name, and the foreground
+and background colors of the banner and the associated button bar.
+
+ $site_stylesheet = undef;
+
+When this variable is set to point to a CSS stylesheet, all Gnatsweb
+pages are linked to this stylesheet.  You can either specify an
+absolute URL like 'http://gnats.example.com/stylesheet.css' or a URL
+relative to the document root of your web server.
+
+ $include_audit_trail = 1;
+
+When set to 1, the Audit-Trail will be visible by default in the View
+PR screen.  Sites that expect large Audit-Trails, i.e. lot of mail
+back and forth etc., will want to set this to 0.
+
+ $popup_menu_becomes_obnoxious = 20;
+
+When a list contains many items, it is better to use a scrolling list
+rather than a popup menu.  This variable specifies when a popup menu
+should be considered too large.
+
+ $scrolling_menu_default_size = 3;
+
+Specifies the default size for scrolling list fields.  This variable
+is overridden for some fields.
+
+ $site_background = undef;
+
+The default background color for all Gnatsweb pages.  If no value is
+given, Gnatsweb leaves it up to the browser to decide which background
+color to use.
+
+ $site_required_field_color = '#ff0000';
+
+Color to use for marking the names of required fields on the Create PR
+page.  Default is pure red.
+
+ %mark_urls = ( 'urls'       => 1,
+                'emails'     => 1,
+                'prs'        => 1,
+                'max_length' => 1024*100,
+              );
+
+Hash which controls the mark_urls routine, which "htmlifies" PRs for
+view_pr. mark_urls adds a lot of usability, but can be slow for huge
+(100K+) fields.
+
+=over
+
+=item * urls = make links clickable
+=item * emails = make addresses mailto: links
+=item * prs = make PR numbers links to gnatsweb
+=item * max_length = strings larger than this will not be processed
+
+=back
+
+ $use_temp_db_prefs_cookie = 0;
+
+Controls whether a temporary cookie will be used for login
+information.  Gnatsweb stores login information in the db_prefs
+cookie, and with this variable set to '0' a persistent cookie is
+stored on disk, something which is undesirable on machines where
+several users use the same browser.  With the variable set to 1, the
+cookie is stored only in the browser itself, causing the cookie to be
+deleted when the user exits the browser.
+
+ $global_cookie_path = '/';
+
+Specifies what to use as path argument in cookies.  Modifying this
+variable should not be necessary.
+
+ $global_cookie_expires = '+30d';
+
+For installations that use persistent db_prefs cookies (see above),
+this variable controls when the cookies expire.  The default is 30
+days.
+
+ $textwidth = 60;
+
+Controls the width of text fields in forms.
+
+ $site_allow_remote_debug = 1;
+
+If this is set to '1', setting the 'debug' param in request URLs to
+Gnatsweb will display communications between gnatsd and Gnatsweb in
+the browser.  This is really only useful to GNATS administrators for
+debugging Gnatsweb or GNATS installation.
+
+To debug, you would use a URL similar to the following:
+http://gnats.example.com/cgi-bin/gnatsweb.pl?debug=option
+where option is either 'cmd', 'reply' or 'all'.
+
+ $attachment_delimiter = "----gnatsweb-attachment----\n";
+
+Delimiter to use within PRs for storage of attachments.  Modifying
+this variable should not be necessary and will break existing
+attachments.
+
+ $gnats_info_top = 'http://www.gnu.org/software/gnats/gnats_toc.html';
+
+The URL of a web site providing the GNATS manual in HTML format.  This
+URL is presented if the help page pointed to by $help_page_path is
+unavailable
+
+=head2 CALLBACKS
+
+Callbacks provide a more powerful way of customizing Gnatsweb than the
+configuration variable approach detailed in CUSTOMIZE.vars.  By
+default, the gnatsweb.pl script provides "callback hooks" in several
+places where it is expected that sites may want to modify behaviour,
+such as providing extra buttons or functionality on the main page,
+extra explanatory text in the Edit and Create PR pages and so on.
+Basic knowledge of Perl is required in order to use callbacks.
+
+Callback hooks generally look like this:
+
+ result = cb('reason', arg1, arg2, ...);
+
+The cb subroutine in turn calls the site_callback subroutine in the
+site configuration file, by default gnatsweb-site.pl and passes the
+reason and the args.  The site_callback routine typically consists of
+a series of if statements which are used for selecting which subblock of
+site_callback to execute, based on the passed reason.  See the file
+gnatsweb-site-example.pl for an example of this.
+
+The called block of code returns a result which can then be used in
+the calling gnatsweb.pl routine.  If cb is called with a reason that
+is not defined in the site configuration file, undef is returned.
+
+A typical application for this is adding extra text or form buttons to
+Gnatsweb pages.  An example illustrates this:
+
+In the main_page subroutine of gnatsweb.pl, you will find two lines
+reading:
+
+ my $top_buttons_html = cb('main_page_top_buttons') || '';
+ print $top_buttons_html;
+
+This basically means that we can define a block of code in the site
+file which returns HTML which will then be added to the top of the
+main page.  The example file gnatsweb-site-example.pl contains such a
+block:
+
+    if ($reason eq 'main_page_top_buttons')
+    {
+        my $html = one_line_form('Open Support Issue:',
+                      $q->submit(-name=>'cmd', -value=>'create'),
+                      $q->hidden(-name=>'Class', -default=>'support'),
+                      $q->hidden(-name=>'Submitter-Id',
+                      -default=>'internal'));
+        return $html;
+    }
+
+This block returns the HTML for an additional 'create' button which
+takes the user to the Create PR page with Class set to 'support' and
+Submitter-Id set to 'internal'.
+
+=head3 Using the default callback hooks
+
+As previously mentioned, Gnatsweb contains several default hooks which
+allow you to customize key parts of Gnatsweb behaviour.  The callback
+reasons and their intended use is listed below, and examples of how
+some of them can be used can be found in the gnatsweb-site-example.pl
+file of the Gnatsweb distribution.
+
+Reason: page_start_html
+Called from: page_start_html
+With parameters: $title
+When this reason is defined in site_callback, the top banner and the
+button bar are replaced by the returned HTML.  $title is the page
+title.
+
+Reason: page_heading
+Called from: page_heading
+With parameters: $title, $heading
+The page heading (by default a simple H1), is replaced by the returned
+HTML.  $title is the page title and $heading is the page heading.
+
+Reason: main_page_top_buttons
+Called from: main_page
+With parameters: none
+The HTML code returned is added above the first default button of the
+main page.  An example of this can be found in the
+gnatsweb-site-example.pl file of the Gnatsweb distribution.
+
+Reason: main_page_bottom_buttons
+Called from: main_page
+With parameters: none
+Same as main_page_top_buttons, but the returned HTML is added below
+the last default button on the main page.  A fairly advanced example
+of this can be found in gnatsweb-site-example.pl.
+
+Reason: page_footer
+Called from: page_footer
+With parameters: $title
+The HTML returned is added before the end of each page. $title is the
+page title.
+
+Reason: page_end_html
+Called from: page_end_html
+With parameters: $title
+The HTML returned is printed together with the end BODY and HTML tags
+on each page.
+
+Reason: login_page_text
+Called from: login_page
+With parameters: none
+The HTML returned is printed between the heading and the
+username/password fields on the login page.
+
+Reason: initialize
+Called from: initialize
+With parameters: none
+The initialize subroutine of gnatsweb.pl takes care of logging into
+GNATS and initializing certain globals, such as database access level
+and valid categories and submitters for the current database.  This
+callback hook is located at the end of initialize, so here you can add
+commands and have them sent to the GNATS daemon each time a session is
+initiated.  You can also use this callback for such things as
+restricting the list of valid categories or submitters.  The return
+value of this callback is thrown away.
+
+Reason: cmd
+Called from: main
+With parameters: $cmd
+Each time Gnatsweb is invoked, a command is passed to indicate what
+action Gnatsweb should take.  For instance, if you click the 'advanced
+query' button on the main page, the browser passes the parameter
+'advanced query' as part of the HTTP request to the web server.  The
+'main' subroutine is basically a big switch which calls the
+subroutines associated with each command.  The 'cmd' callback provides
+a way to extend funtionality by adding commands, an explanatory
+example can be found in the gnatsweb-site-example.pl file of the
+Gnatsweb distribution. $cmd is the passed command name.
+
+Reason: edit_intro_'fieldname'
+Called from: edit
+With parameters: $field_number
+
+The returned HTML is inserted above the given field in the Edit PR
+page.  Note that the fieldname should be the name of the field that is
+specified in the dbconfig file.  An example, inserting a notice above
+the 'Description' field is included in the gnatsweb-site-example.pl
+file.  The $field_number parameter is JavaScript-related -- look in
+the gnatsweb.pl file for details.
+
+Reason: sendpr_intro_'fieldname'
+Called from: sendpr
+With parameters: $field_number
+Same as edit_intro_'fieldname', but the returned HTML is inserted on
+the Create PR page.
+
+
+=head3 Adding your own callback hooks
+
+Adding your own callbacks is as easy as inventing your own unique
+'reason', inserting the appropriate call to cb in gnatsweb.pl and
+writing the corresponding block of code inside site_callback in your
+own site configuration file (by default gnatsweb-site.pl).  This is
+the recommended way to add your own customizations, since upgrading
+Gnatsweb later on will only require that you carry the cb calls over
+to the new gnatsweb.pl.
+
+=head1 TROUBLESHOOTING
+
+
+This document presents some problems that people may stumble onto
+when installing Gnatsweb:
+
+1. When I run 'make test ...', the connect test fails.
+
+   This means that Gnatsweb is unable to connect to the GNATS server.
+   The problem lies either in the password/username/database
+   combination you supplied to 'make test' or with the GNATS server
+   itself.  Try the following:
+
+   - Read item 6 of the INSTALL document carefully.  Check that you
+     gave an existing username, password and database combination.
+   - GNATS may be denying access to the machine which the webserver
+     runs on.  Read item 2 of the INSTALL document carefully.
+   - There have also been instances where the GNATS server machine has
+     had a hosts.deny file in the /etc directory, denying access no
+     matter what GNATS has been set up to provide.  If this is the
+     case, consult your system administrator.
+   - If your are still unable to get the test script to connect, try
+     telneting from your web server to port 1529 of the GNATS server
+     and see if your connection is being accepted.  If you can connect
+     by telnet, you should as a last resort try to do a 'make install'
+     of Gnatsweb and see if it works even though the tests failed.
+
+
+2. The attachment handling functionality in the Create PR and Edit PR
+   screens is missing.
+
+   The Base64 Perl module is probably missing from your system.  See
+   item 4 in the INSTALL document on how to fix this.
+
+
+3. Using Lynx for Gnatsweb login is broken.
+
+   No good solution exists at the present time.  We believe that
+   current versions of Lynx have some broken cookie/redirect
+   functionality which causes this.
+
+
+4. When you use the "Remember this query as" function, the query is
+   stored as a cookie in your web browser. If the query is very
+   complex, the resulting cookie might become larger than the limit
+   imposed by the web server on cookie transfers. The following error
+   will be issued by the web server when you try to access the GNATS
+   database:
+
+     Bad Request
+
+     Your browser sent a request that this server could not
+     understand.
+
+     Size of a request header field exceeds server limit.
+
+   Solution 1: A quick client-side solution is to delete the offending
+   cookie from the repository of your browser (cookies.txt in
+   Netscape, the cookies directory in the Windows user profile for
+   Internet Explorer).
+
+   Solution 2: A more permanent solution is the server-side one. If
+   you use Apache, recompile and install it with the
+   DEFAULT_LIMIT_REQUEST_FIELDSIZE setting in src/include/httpd.h of
+   the Apache source tree increased from the default value of 8190 to
+   something like 32768.
+
+
+5. Getting help.
+
+   - Go through the TROUBLESHOOTING document.
+   - Try sifting through the GNATS-related mailing list archives at
+     http://savannah.gnu.org/mail/?group_id=65
+   - If you still have problems, try posting to the help-gnats mailing
+     list.  Subscribe from http://savannah.gnu.org/mail/?group_id=65
+     Please avoid posting until you are completely certain that there
+     is nothing relevant in the mailinglist archives.
