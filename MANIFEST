@@ -1,0 +1,16 @@
+ChangeLog
+COPYING
+CUSTOMIZE
+CUSTOMIZE.cb
+CUSTOMIZE.vars
+gnatsweb.html
+INSTALL
+Makefile.PL
+MANIFEST			This list of files
+NEWS
+README
+script/gnatsweb-site-example.pl
+script/gnatsweb-site.pl
+script/gnatsweb.pl
+t/test.pl
+TROUBLESHOOTING
